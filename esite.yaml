@@ -2,7 +2,3 @@ SourcePath: "./web/"
 BuildPath: "./build/"
 RemoveHtmlExtension: true
 PreviewPort: 8080
-
-BucketName: <MY_BUCKET>
-BucketRegion: <AWS_BUCKET_REGION>
-CloudfrontId: <CLOUDFRONT_ID>
