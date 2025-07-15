@@ -1,0 +1,17 @@
+$defaultLanguage: en
+
+global:
+  pageName: "Mannr"
+
+en:
+  heading: Mannr - A better way to life
+  subheading: Life is full of mysteries, life is full of hardships. Mannr gives you a path to salvation.
+  section2:
+    - "\"A person is only ever as good as his actions are.\""
+    - "Unfortunately, many people today struggle with doing the right thing."
+    - "There are many misguided paths, it is hard to know what's right and what's wrong."
+    - "Mannr is a teaching beloved by many for its clear guidance."
+
+  footer:
+    # See https://news.ycombinator.com/item?id=34880663 for why the year can be static at build time
+    copyright: Copyright © {year} mannr.org. All rights reserved.

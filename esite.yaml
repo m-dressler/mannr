@@ -1,4 +1,0 @@
-SourcePath: "./web/"
-BuildPath: "./build/"
-RemoveHtmlExtension: true
-PreviewPort: 8080

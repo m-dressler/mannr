@@ -1,0 +1,17 @@
+{
+  "tasks": {
+    "dev": "deno run --env-file -A --allow-scripts jsr:@md/cf-page serve",
+    "build": "deno run -A --allow-scripts jsr:@md/cf-page build"
+  },
+  "compilerOptions": {
+    "types": ["npm:@cloudflare/workers-types"],
+    "lib": ["esnext", "dom"]
+  },
+  "imports": {
+    "tailwindcss": "npm:tailwindcss@^4" // Specify the version of Tailwind CSS
+  },
+  "nodeModulesDir": "auto",
+  "@md/cf-page": {
+    "port": 8081
+  }
+}

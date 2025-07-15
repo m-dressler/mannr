@@ -1,0 +1,42 @@
+@import "tailwindcss"; /* Enables tailwind 4 in your project */
+
+@theme {
+  --font-display: "Trebuchet MS", "sans-serif";
+  --font-sans: "Trebuchet MS", sans-serif;
+  --color-background: rgb(18, 18, 18);
+  --color-background-light: rgb(69, 14, 14);
+  --color-main: rgb(247, 247, 247);
+  --color-red: rgb(192, 19, 19);
+}
+
+/** Base styles for the entire application */
+@layer base {
+  body {
+    @apply flex flex-col min-h-dvh bg-background text-main;
+  }
+
+  header {
+    @apply p-2 bg-background-light;
+  }
+
+  main {
+    @apply flex flex-col justify-center items-center grow px-8;
+  }
+  main h1 {
+    @apply text-3xl font-bold mb-4;
+  }
+  main > section {
+    @apply mb-4;
+  }
+  main > section > p {
+    @apply mb-2;
+  }
+
+  footer {
+    @apply p-4 bg-background-light;
+  }
+
+  a {
+    @apply text-red visited:text-red;
+  }
+}
