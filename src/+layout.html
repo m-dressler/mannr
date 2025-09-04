@@ -14,7 +14,7 @@
     <meta property="og:image" content="/logo.webp" />
   </head>
   <body>
-    <header>
+    <header style="view-transition-name: header">
       <nav>
         <a
           href="/"
@@ -27,7 +27,7 @@
     <main>
       <slot />
     </main>
-    <footer>
+    <footer style="view-transition-name: footer">
       <div>{footer.copyright, year: {cf:year}}</div>
     </footer>
   </body>

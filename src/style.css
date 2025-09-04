@@ -9,6 +9,24 @@
   --color-red: rgb(192, 19, 19);
 }
 
+@view-transition {
+  navigation: auto;
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: fade 0.25s ease both;
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
 /** Base styles for the entire application */
 @layer base {
   body {
