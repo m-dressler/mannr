@@ -3,25 +3,29 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{pageName}</title>
+    <title><slot name="title">{pageName}</slot></title>
     <link rel="stylesheet" href="/style.css" />
     <link rel="shortcut icon" href="/logo.svg" />
-    <meta property="og:title" content="{pageName} - Home Of Masculinity" />
-    <meta
-      property="og:description"
-      content="The home for all your masculinity needs, dreams and wants."
-    />
-    <meta property="og:image" content="/logo.webp" />
+    <slot name="og:tags">
+      <meta property="og:title" content="{pageName} - Home Of Masculinity" />
+      <meta
+        property="og:description"
+        content="The home for all your masculinity needs, dreams and wants."
+      />
+      <meta property="og:image" content="/logo.webp" />
+    </slot>
+    <slot name="head" />
   </head>
   <body>
     <header style="view-transition-name: header">
-      <nav>
+      <nav class="flex gap-4">
         <a
           href="/"
-          class="flex items-center gap-2 text-main no-underline visited:text-main"
+          class="inline-flex items-center gap-2 text-main no-underline visited:text-main"
         >
           <img src="/logo.svg" class="h-8" alt="Logo" /><span>{pageName}</span>
         </a>
+        <slot name="header" />
       </nav>
     </header>
     <main>
