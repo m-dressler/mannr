@@ -32,7 +32,6 @@ Rituals
 - The Big Barbie — Hard work and appreciation of sacrifice (animal)
 - Shirt Saturday — Shirt is there to remind you that Saturday is also a workday
 
-Beer is our sacred drink (e.g. wine in Christianity) you can buy masculinity
-tokens
+Beer is our sacred drink (e.g. wine in Christianity) you can buy masculinity points (MPs).
 
 Marketing: Männlichkeits scale of popular people

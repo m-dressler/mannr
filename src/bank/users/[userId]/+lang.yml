@@ -1,0 +1,30 @@
+en:
+  send_mps: Send Tokens
+  send_mps_to: Send MPs to {name}
+  transfer: Transfer
+  create: Create
+  reason: Reason
+  available_balance: Available balance
+  revoke_mps: Revoke Tokens from {name}
+  transaction_history: Transaction History
+  loading: Loading
+  custom_reason: Custom Reason
+  toast:
+    transaction_success: Transaction successful!
+    transaction_created: Transaction created and pending vouches
+    mps_updated: "{name}'s MPs have been updated"
+    errors:
+      - name: generic
+        message: An error occurred. Please try again.
+      - name: user_not_found
+        message: User not found.
+      - name: invalid_reason
+        message: Please select a valid reason.
+      - name: insufficient_permissions
+        message: You don't have permission to perform this action.
+      - name: insufficient_balance
+        message: Insufficient balance for this transfer.
+      - name: invalid_delta
+        message: Please enter a valid amount.
+      - name: transaction_failed
+        message: Failed to create transaction. Please try again.

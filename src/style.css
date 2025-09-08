@@ -50,11 +50,91 @@
     @apply mb-2;
   }
 
+  button {
+    @apply px-4 py-2 bg-red text-main rounded hover:bg-red/80 transition-colors
+      cursor-pointer;
+  }
+
+  button[disabled] {
+    @apply bg-gray-700 cursor-not-allowed;
+  }
+
+  input {
+    @apply border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none
+      focus:ring-2 focus:ring-blue-500;
+  }
+  input[type="number"] {
+    @apply [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none
+      [&::-webkit-inner-spin-button]:appearance-none;
+  }
+
   footer {
     @apply p-4 bg-background-light;
   }
 
   a {
     @apply text-red visited:text-red;
+  }
+}
+
+@layer components {
+  dialog.modal[open] {
+    @apply mx-auto my-auto bg-transparent items-center justify-center p-4 z-10
+      text-white;
+  }
+
+  dialog.modal::backdrop {
+    @apply bg-black/50 backdrop-blur-xs;
+  }
+
+  dialog.modal > :first-child:last-child {
+    @apply bg-background rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh]
+      overflow-auto mx-auto drop-shadow-lg border border-[#ffffff33];
+  }
+
+  dialog.modal header {
+    @apply flex justify-between items-center p-3;
+  }
+
+  dialog.modal main {
+    @apply p-4;
+  }
+
+  dialog.modal footer {
+    @apply flex justify-end gap-2 p-3 border-t;
+  }
+
+  /* Toast notifications */
+  #toast-container {
+    @apply fixed top-4 right-4 z-50 flex flex-col gap-2;
+  }
+
+  .toast {
+    @apply px-4 py-3 rounded-lg shadow-lg text-white font-medium min-w-64
+      transform translate-x-[120%] transition-transform duration-300 ease-out;
+  }
+
+  .toast-success {
+    @apply bg-green-600;
+  }
+
+  .toast-error {
+    @apply bg-red-600;
+  }
+
+  .toast-show {
+    @apply translate-x-0;
+  }
+
+  .badge-active {
+    @apply bg-green-700;
+  }
+
+  .badge-pending {
+    @apply bg-yellow-600;
+  }
+
+  .badge-revoked {
+    @apply bg-red-700;
   }
 }

@@ -3,3 +3,4 @@ dist/
 functions/
 node_modules/
 .DS_Store
+.bindings.local/

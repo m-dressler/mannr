@@ -1,0 +1,24 @@
+{
+  "short_name": "Mannr",
+  "name": "Mannr",
+  "description": "The home for all your masculinity needs, dreams and wants.",
+  "start_url": "/bank",
+  "display": "standalone",
+  "background_color": "#121212",
+  "theme_color": "#c01313",
+  "icons": [
+    {
+      "src": "/logos/logo_192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/logos/logo_512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "orientation": "portrait",
+  "scope": "/bank",
+  "lang": "en-US"
+}

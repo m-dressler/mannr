@@ -2,8 +2,10 @@ $defaultLanguage: en
 
 global:
   pageName: "Mannr"
+  mps: "MPs"
 
 en:
+  bank: "Bank"
   heading: Mannr - A better way to life
   subheading: Life is full of mysteries, life is full of hardships. Mannr gives you a path to salvation.
   section2:
@@ -15,3 +17,7 @@ en:
   footer:
     # See https://news.ycombinator.com/item?id=34880663 for why the year can be static at build time
     copyright: Copyright © {year} mannr.org. All rights reserved.
+
+  global:
+    at: "at"
+    search_placeholder: Search...

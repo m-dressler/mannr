@@ -6,6 +6,7 @@
     <title><slot name="title">{pageName}</slot></title>
     <link rel="stylesheet" href="/style.css" />
     <link rel="shortcut icon" href="/logo.svg" />
+    <link rel="manifest" href="/manifest.json" />
     <slot name="og:tags">
       <meta property="og:title" content="{pageName} - Home Of Masculinity" />
       <meta
@@ -25,14 +26,34 @@
         >
           <img src="/logo.svg" class="h-8" alt="Logo" /><span>{pageName}</span>
         </a>
+        <a
+          href="/bank"
+          class="inline-flex items-center gap-2 text-main underline visited:text-main ml-5"
+        >
+          {bank}
+        </a>
         <slot name="header" />
       </nav>
     </header>
-    <main>
+    <main class="py-2">
       <slot />
     </main>
     <footer style="view-transition-name: footer">
       <div>{footer.copyright, year: {cf:year}}</div>
     </footer>
+    <slot name="modals" />
+
+    <div id="toast-container">
+      <template>
+        <div class="toast" role="status" aria-live="polite">
+          <span class="toast-message"></span>
+        </div>
+      </template>
+      <!-- Allows each page to define the internationalized toast messages it needs -->
+      <div hidden>
+        <slot name="toasts" />
+        <!-- example: <data name="toast_name" value="{message}" type="success"></data> -->
+      </div>
+    </div>
   </body>
 </html>

@@ -1,0 +1,59 @@
+<slot name="title">{pageName} | {bank}</slot>
+<slot name="header">
+  <a href="/bank/me" class="ml-auto">
+    <img
+      data-type="profile-picture"
+      src="https://www.gravatar.com/avatar/?d=mp"
+      class="h-8 rounded-full"
+      style="view-transition-name: current-avatar"
+    />
+  </a>
+</slot>
+
+<h1>{leaderboard}</h1>
+<ol class="grid gap-8 grid-cols-3 max-w-lg" data-type="leaderboard">
+  <template>
+    <li>
+      <a href="/bank/users/" class="flex flex-col items-center">
+        <img
+          src=""
+          alt="User Image"
+          class="rounded-full mb-4 border-main border-2"
+          style="view-transition-name: user-avatar"
+        />
+        <h4 class="text-lg font-bold" style="view-transition-name: user-name">
+        </h4>
+        <p class="text-gray-500 text-s" style="view-transition-name: user-info">
+          {mps}
+        </p>
+      </a>
+    </li>
+  </template>
+</ol>
+<table data-type="user-list" class="mt-4">
+  <template>
+    <tr>
+      <td class="p-1 pr-2 align-middle">
+        <img
+          src=""
+          alt="User Image"
+          class="rounded-full border-main border-2 w-8 h-8"
+          style="view-transition-name: user-avatar"
+        />
+      </td>
+      <td class="pr-2 align-middle">
+        <a href="/bank/users/" class="flex items-center">
+          <h4 class="text-lg font-bold" style="view-transition-name: user-name">
+          </h4>
+        </a>
+      </td>
+      <td class="align-middle">
+        <p class="text-gray-500 text-s" style="view-transition-name: user-info">
+          {mps}
+        </p>
+      </td>
+    </tr>
+  </template>
+</table>
+
+<script src="/bank/index.ts" inline></script>

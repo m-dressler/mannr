@@ -1,0 +1,31 @@
+$defaultLanguage: en
+
+global:
+
+en:
+  bank: Bank
+  leaderboard: Leaderboard
+
+  roles: Roles
+  roles_details:
+    - id: access_platform
+      name: "Access Platform"
+      description: "Can log in and view the Mannr platform"
+    - id: transfer_mt
+      name: "Transfer MT"
+      description: "Can transfer MPs from their own account to someone else"
+    - id: vouch_mt
+      name: "Vouch MT"
+      description: "Can vouch for an MT creation (4)"
+    - id: invite_user
+      name: "Invite User"
+      description: "Can add someone new to the Mannr platform"
+    - id: create_mt
+      name: "Create MT"
+      description: "Can create new MPs for special events which need to be vouched for (2)"
+    - id: ban_users
+      name: "Ban Users"
+      description: "Can remove access from the Mannr platform"
+    - id: revoke_transaction
+      name: "Revoke Transaction"
+      description: "Can revoke transactions and reverse their MT effects"

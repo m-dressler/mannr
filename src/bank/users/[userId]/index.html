@@ -1,0 +1,252 @@
+<slot name="head">
+  <script src="/js/dialog.ts" async></script>
+  <script src="/js/form.ts" async></script>
+  <script src="/js/toast.ts" async></script>
+  <script src="./index.ts" inline></script>
+</slot>
+
+<slot name="header">
+  <a href="/bank/me" class="ml-auto">
+    <img
+      data-type="profile-picture"
+      src="https://www.gravatar.com/avatar/?d=mp"
+      class="h-8 rounded-full"
+      style="view-transition-name: current-avatar"
+    />
+  </a>
+</slot>
+
+<img
+  id="profile-picture"
+  src="[AVATAR_SRC]"
+  alt="[AVATAR_ALT]"
+  class="w-24 h-24 rounded-full mb-4 border-main border-2"
+  style="view-transition-name: user-avatar- [GRAVATAR_ID]"
+/>
+<h1
+  id="name"
+  class="mb-0"
+  style="view-transition-name: user-name- [GRAVATAR_ID]"
+>
+  [NAME]
+</h1>
+<p
+  id="mps-balance"
+  class="text-gray-500 mb-2"
+  style="view-transition-name: user-info- [GRAVATAR_ID]"
+>
+  [TOKENS] {mps}
+</p>
+<div class="grid gap-4 mb-8 grid-cols-2 w-30">
+  <button title="{send_mps}" data-dialog="send-mps-modal" class="p-2">
+    <img src="@lib/client/icons/mps-send.svg" inline class="w-full h-full">
+  </button>
+  <button title="{revoke_mps}" data-dialog="revoke-mps-modal" class="p-2">
+    <img src="@lib/client/icons/mps-revoke.svg" inline class="w-full h-full">
+  </button>
+</div>
+
+<section class="transactions-section w-full max-w-2xl">
+  <h2 class="text-2xl font-bold mb-4">{transaction_history}</h2>
+  <ul id="transactions-list" class="list-none p-0 space-y-3">
+    <template id="transaction-template">
+      <li class="bg-background-light rounded-lg p-4 border border-gray-700">
+        <div
+          class="flex justify-between items-center mb-2 text-sm text-slate-300"
+        >
+          <p>
+            <span data-slot="creator"></span>
+            {global.at}
+            <time data-slot="date"></time>
+          </p>
+          <span
+            class="badge px-2 py-1 rounded text-xs font-semibold uppercase text-white"
+            data-slot="status-badge"
+          >
+            <span data-slot="status-text"></span>
+          </span>
+        </div>
+        <div class="flex justify-between">
+          <p class="text-lg font-medium" data-slot="reason"></p>
+          <p class="font-bold text-lg" data-slot="delta"></p>
+        </div>
+        <div
+          class="flex gap-2 mt-3 pt-3 border-t border-gray-700 text-white"
+          data-slot="actions"
+        >
+          <button
+            class="bg-green-600 hover:bg-green-700 px-3 py-1 rounded text-sm font-medium transition-colors"
+            data-slot="btn-vouch"
+          >
+            Vouch
+          </button>
+          <button
+            class="bg-red-600 hover:bg-red-700 px-3 py-1 rounded text-sm font-medium transition-colors"
+            data-slot="btn-revoke"
+          >
+            Revoke
+          </button>
+        </div>
+      </li>
+    </template>
+  </ul>
+  <div id="transactions-loading" class="text-center p-4" style="display: none">
+    {loading}...
+  </div>
+  <div id="transactions-sentinel" style="height: 1px"></div>
+</section>
+
+<slot name="modals">
+  <dialog class="modal" closedby="any" id="send-mps-modal">
+    <form method="post" id="send-mps-form">
+      <input type="hidden" name="mode" id="mode-input" value="transfer" />
+      <header>
+        <h4>{send_mps_to, name: [NAME]}</h4>
+      </header>
+      <main>
+        <search class="flex items-center w-full gap-1 mb-2">
+          <input
+            type="search"
+            id="send-mps-search"
+            class="grow h-6 px-1"
+            placeholder="{global.search_placeholder}"
+          >
+          <img
+            src="@lib/client/icons/search.svg"
+            inline
+            class="w-6 h-6"
+            fill="white"
+          >
+        </search>
+        <ol
+          id="send-mps-option-container"
+          class="max-h-[50dvh] h-auto overflow-y-auto w-full"
+        >
+          <template>
+            <li>
+              <label
+                class="has-[input:checked]:text-red flex gap-2 justify-between"
+              >
+                <input type="radio" name="reason" value="id:" class="hidden">
+                <span>Name</span>
+                <em>{mps}</em>
+              </label>
+            </li>
+          </template>
+        </ol>
+        <div class="w-full flex gap-1 pt-3 mt-5 border-t border-t-gray-50">
+          <input
+            name="reason"
+            type="text"
+            placeholder="{custom_reason}"
+            class="h-6 px-1 grow w-auto"
+          >
+          <input
+            name="delta"
+            type="number"
+            min="1"
+            placeholder="10"
+            class="h-6 px-1 w-10"
+          >{mps}
+        </div>
+      </main>
+      <footer>
+        <button
+          type="submit"
+          id="create-btn"
+          class="py-1 bg-gray-600 hover:bg-gray-700"
+          style="display: none"
+        >
+          {create}
+        </button>
+        <button type="submit" id="transfer-btn" class="py-1">{transfer}</button>
+      </footer>
+    </form>
+  </dialog>
+  <dialog class="modal" closedby="any" id="revoke-mps-modal">
+    <form method="post">
+      <header>
+        <h4>{revoke_mps, name: [NAME]}</h4>
+      </header>
+      <main>
+        <search class="flex items-center w-full gap-1 mb-1">
+          <input
+            type="search"
+            id="send-mps-search"
+            class="grow h-6 px-1"
+            placeholder="{global.search_placeholder}"
+          >
+          <img
+            src="@lib/client/icons/search.svg"
+            inline
+            class="w-6 h-6"
+            fill="white"
+          >
+        </search>
+        <ol
+          id="revoke-mps-option-container"
+          class="max-h-[50dvh] h-auto overflow-y-auto w-full"
+        >
+          <template>
+            <li>
+              <label
+                class="has-[input:checked]:text-red flex gap-2 justify-between"
+              >
+                <input type="radio" name="reason" value="id:" class="hidden">
+                <span>Name</span>
+                <em>{mps}</em>
+              </label>
+            </li>
+          </template>
+        </ol>
+        <div class="w-full flex gap-1 pt-3 mt-5 border-t border-t-gray-50">
+          <input
+            name="reason"
+            type="text"
+            placeholder="{custom_reason}"
+            class="h-6 px-1 grow w-auto"
+          >
+          <span>-<input
+              name="delta"
+              type="number"
+              min="1"
+              placeholder="10"
+              class="h-6 px-1 w-10"
+            ></span>{mps}
+          <input name="negative" checked hidden readonly>
+        </div>
+      </main>
+      <footer>
+        <button
+          type="submit"
+          id="create-btn"
+          class="py-1 bg-gray-600 hover:bg-gray-700"
+          style="display: none"
+        >
+          {create}
+        </button>
+        <button type="submit" id="transfer-btn" class="py-1">{transfer}</button>
+      </footer>
+    </form>
+  </dialog>
+</slot>
+
+<slot name="toasts">
+  <data
+    name="transaction_success"
+    data-type="success"
+    value="{toast.transaction_success}"
+  ></data>
+  <data
+    name="transaction_created"
+    data-type="success"
+    value="{toast.transaction_created}"
+  ></data>
+  {#each toast.errors as error}
+  <data
+    name="{error.name}"
+    data-type="error"
+    value="{error.message}"
+  ></data>
+  {/each}
+</slot>
