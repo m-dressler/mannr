@@ -8,12 +8,15 @@
     "npm:blueimp-md5@^2.19.0": "2.19.0",
     "npm:fuzzysort@^3.1.0": "3.1.0",
     "npm:jose@^6.1.2": "6.1.2",
-    "npm:tailwindcss@4": "4.1.17",
-    "npm:zod@^4.0.5": "4.1.12"
+    "npm:tailwindcss@^4.1.17": "4.1.17",
+    "npm:zod@^4.1.13": "4.1.13"
   },
   "jsr": {
     "@md/cf-page@0.8.1": {
       "integrity": "f8a2b3aba36325e31b7f73bbfea1f6245bb13dc6c50aa6a30b0b6b1936d92310"
+    },
+    "@md/cf-page@0.8.7": {
+      "integrity": "f7a7d7cbfd0aedf1b9a14ab0b64ef5ad72ffdabeb5f554936408f5d23dc326a5"
     },
     "@md/dom-ready-promise@0.0.0": {
       "integrity": "04822d4c145486383147d4ed0a4e57dc25cc03abacd192d63e17f74ca8cd87b9"
@@ -41,8 +44,8 @@
     "tailwindcss@4.1.17": {
       "integrity": "sha512-j9Ee2YjuQqYT9bbRTfTZht9W/ytp5H+jJpZKiYdP/bpnXARAuELt9ofP0lPnmHjbga7SNQIxdTAXCmtKVYjN+Q=="
     },
-    "zod@4.1.12": {
-      "integrity": "sha512-JInaHOamG8pt5+Ey8kGmdcAcg3OL9reK8ltczgHTAwNhMys/6ThXHityHxVV2p3fkw/c+MAvBHFVYHFZDmjMCQ=="
+    "zod@4.1.13": {
+      "integrity": "sha512-AvvthqfqrAhNH9dnfmrfKzX5upOdjUVJYFqNSlkmGf64gRaTzlPwz99IHYnVs28qYAybvAlBV+H7pn0saFY4Ig=="
     }
   },
   "workspace": {
@@ -55,8 +58,8 @@
       "npm:blueimp-md5@^2.19.0",
       "npm:fuzzysort@^3.1.0",
       "npm:jose@^6.1.2",
-      "npm:tailwindcss@4",
-      "npm:zod@^4.0.5"
+      "npm:tailwindcss@^4.1.17",
+      "npm:zod@^4.1.13"
     ]
   }
 }

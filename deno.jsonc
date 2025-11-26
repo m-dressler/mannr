@@ -1,8 +1,9 @@
 {
   "tasks": {
-    "dev": "deno run --env-file --unstable-raw-imports --watch='.env,deno.jsonc' -A --allow-scripts jsr:@md/cf-page serve",
-    "build": "deno run -A --allow-scripts --env-file --unstable-raw-imports jsr:@md/cf-page build"
+    "dev": "deno run --env-file --watch='.env,deno.jsonc' -A  --unstable-bundle --allow-scripts jsr:@md/cf-page serve",
+    "build": "deno run -A --allow-scripts --unstable-bundle jsr:@md/cf-page build"
   },
+  "unstable": ["raw-imports", "bundle"], // Enables useful unstable Deno APIs
   "compilerOptions": {
     "types": ["npm:@cloudflare/workers-types"],
     "lib": ["esnext", "dom"]
@@ -17,12 +18,13 @@
     "blueimp-md5": "npm:blueimp-md5@^2.19.0",
     "fuzzysort": "npm:fuzzysort@^3.1.0",
     "jose": "npm:jose@^6.1.2",
-    "tailwindcss": "npm:tailwindcss@^4", // Specify the version of Tailwind CSS
-    "zod": "npm:zod@^4.0.5"
+    "tailwindcss": "npm:tailwindcss@^4.1.17", // Specify the version of Tailwind CSS
+    "zod": "npm:zod@^4.1.13"
   },
   "nodeModulesDir": "auto",
   "@md/cf-page": {
     "port": 8081,
+    "watchDirs": ["./lib"], // Ensure changes in lib also refresh server
     "bindings": {
       "KV": { "type": "KV", "id": "177abc2204fb4c00aeda67f18396c1f2" },
       "DB": { "type": "D1", "id": "a59a375a-31e2-4aba-8821-93dff13eb195" }
