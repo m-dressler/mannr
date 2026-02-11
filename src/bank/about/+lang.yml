@@ -1,0 +1,52 @@
+en: 
+  about: About
+
+  # About page
+  what_is_the_bank: What is the Masculinity Bank?
+  bank_description: >
+    The Masculinity Bank is a peer recognition system where members can
+    acknowledge each other's contributions through Masculinity Points (MPs).
+    It's a way to track and celebrate positive actions within the community.
+
+  how_mps_work: How do MPs work?
+  mps_description: >
+    MPs are tokens of appreciation that members can give to each other.
+    Your total MP balance reflects the recognition you've received from
+    your peers for your contributions to the community.
+
+  earning_mps: Earning MPs
+  earning_description: >
+    You earn MPs when other members transfer them to you. This typically
+    happens when you've done something noteworthy like farting very loudly
+    or flexed your masculinity through dominance of lesser humans.
+
+  sending_mps: Sending MPs
+  sending_description: >
+    You can send MPs from your own balance to another member. Visit their profile
+    and use the send button to transfer points along with a reason for the transfer.
+
+  creating_mps: Creating MPs
+  creating_description: >
+    If you are a high-ranking member of the bank, you can [mint](//en.wikipedia.org/wiki/Coining_(mint))
+    new MPs. However, you'll need someone else to vouch that the recipient truly deserves
+    to get these newly created MPs, so no cheating!
+
+  revoking_mps: Revoking MPs
+  revoking_description: >
+    Members with the appropriate role can revoke MPs for behavior that goes
+    against community values. This deducts points and records the reason
+    in the transaction history.
+
+  leaderboard_description: >
+    The leaderboard displays members ranked by their total MP balance.
+    It's a fun way to see who's been most active and appreciated in
+    the community.
+
+  transactions_vouching: Transactions & Vouching
+  vouching_description: >
+    All MP transfers are recorded as transactions. When new MPs are
+    created (not transferred), they require vouching from other members
+    before they take effect. This ensures community oversight on new
+    point creation.
+
+  back_to_leaderboard: Back to Leaderboard
