@@ -28,3 +28,5 @@ en:
         message: Please enter a valid amount.
       - name: transaction_failed
         message: Failed to create transaction. Please try again.
+      - name: self_transfer
+        message: Cannot transfer MPs to yourself.

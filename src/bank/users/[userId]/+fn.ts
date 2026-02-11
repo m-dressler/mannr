@@ -153,6 +153,15 @@ export const onRequestPost = forwardErrors<Env, "userId", BankData>(async (
       );
     }
 
+    // Prevent self-transfers
+    if (recipientUser.id === ctx.data.token.userId) {
+      throw new ApiError(
+        "Cannot transfer MPs to yourself",
+        400,
+        "self_transfer",
+      );
+    }
+
     transactionType = "transfer";
     senderUserId = ctx.data.token.userId;
 

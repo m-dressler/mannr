@@ -85,10 +85,18 @@ onDomReady(async () => {
   const transferBtn = getElByDatatype<HTMLButtonElement>("transfer-btn")!;
   const modeInput = getElByDatatype<HTMLInputElement>("mode-input")!;
 
+  // Check if viewing own profile (extract userId from URL path)
+  const pathMatch = location.pathname.match(/\/bank\/users\/(\d+)/);
+  const profileUserId = Number(pathMatch?.[1]);
+  const isOwnProfile = profileUserId === userInfo.userId;
+
   // Show create button if user has create_mt role
   if (hasRole(userInfo.roles, "create_mt")) {
     createBtn.style.display = "inline-block";
   }
+
+  // Hide transfer buttons if viewing own profile (can't transfer to yourself)
+  if (isOwnProfile) transferBtn.style.display = "none";
 
   // Set mode when buttons are clicked
   createBtn.addEventListener("click", () => modeInput.value = "create");
