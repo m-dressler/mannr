@@ -99,7 +99,12 @@
 <slot name="modals">
   <dialog class="modal" closedby="any" id="send-mps-modal">
     <form method="post" id="send-mps-form">
-      <input type="hidden" name="mode" id="mode-input" value="transfer" />
+      <input
+        type="hidden"
+        name="mode"
+        data-type="mode-input"
+        value="transfer"
+      />
       <header>
         <h4>{send_mps_to, name: [NAME]}</h4>
       </header>
@@ -153,13 +158,15 @@
       <footer>
         <button
           type="submit"
-          id="create-btn"
+          data-type="create-btn"
           class="py-1 bg-gray-600 hover:bg-gray-700"
           style="display: none"
         >
           {create}
         </button>
-        <button type="submit" id="transfer-btn" class="py-1">{transfer}</button>
+        <button type="submit" data-type="transfer-btn" class="py-1">
+          {transfer}
+        </button>
       </footer>
     </form>
   </dialog>
@@ -219,13 +226,15 @@
       <footer>
         <button
           type="submit"
-          id="create-btn"
+          data-type="create-btn"
           class="py-1 bg-gray-600 hover:bg-gray-700"
           style="display: none"
         >
           {create}
         </button>
-        <button type="submit" id="transfer-btn" class="py-1">{transfer}</button>
+        <button type="submit" data-type="transfer-btn" class="py-1">
+          {transfer}
+        </button>
       </footer>
     </form>
   </dialog>

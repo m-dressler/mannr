@@ -77,29 +77,22 @@ onDomReady(async () => {
 
   // Handle balance display and create button visibility
   const userInfo = await getUserInfo();
-  const createBtn = document.getElementById("create-btn") as HTMLButtonElement;
-  const transferBtn = document.getElementById(
-    "transfer-btn",
-  ) as HTMLButtonElement;
-  const modeInput = document.getElementById("mode-input") as HTMLInputElement;
+
+  const getElByDatatype = <E extends Element = Element>(dataType: string) =>
+    document.querySelector<E>(`[data-type=${dataType}]`);
+
+  const createBtn = getElByDatatype<HTMLButtonElement>("create-btn")!;
+  const transferBtn = getElByDatatype<HTMLButtonElement>("transfer-btn")!;
+  const modeInput = getElByDatatype<HTMLInputElement>("mode-input")!;
 
   // Show create button if user has create_mt role
-  const canCreate = hasRole(userInfo.roles, "create_mt");
-  if (canCreate && createBtn) {
+  if (hasRole(userInfo.roles, "create_mt")) {
     createBtn.style.display = "inline-block";
   }
 
   // Set mode when buttons are clicked
-  if (createBtn && modeInput) {
-    createBtn.addEventListener("click", () => {
-      modeInput.value = "create";
-    });
-  }
-  if (transferBtn && modeInput) {
-    transferBtn.addEventListener("click", () => {
-      modeInput.value = "transfer";
-    });
-  }
+  createBtn.addEventListener("click", () => modeInput.value = "create");
+  transferBtn.addEventListener("click", () => modeInput.value = "transfer");
 });
 
 type TransactionData = Transaction & {
