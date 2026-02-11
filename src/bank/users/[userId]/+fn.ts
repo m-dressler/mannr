@@ -56,7 +56,7 @@ export const onRequestGet: PagesFunction<Env, "userId", BankData> = async ({
   const user = toUiUser(userRaw);
 
   const htmlResponse = await env.ASSETS.fetch(
-    "/bank/users/[userId]/index.html",
+    new URL("/bank/users/[userId]/", request.url),
   );
   const html = template(await htmlResponse.text(), {
     NAME: user.first_name,
