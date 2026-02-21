@@ -31,23 +31,23 @@ export const createErrorResponse = (
     "application/json",
   );
 
+  /** Extracted key to toast with if it's an {@link ApiError} */
+  const toastKey = error instanceof ApiError && error.toastKey
+    ? error.toastKey
+    : undefined;
+
+  // API request - return JSON with toast in header
   if (acceptsJson) {
-    // API request - return JSON
-    return Response.json({ message }, { status });
-  } else {
-    // Form submission - redirect with toast
-    // The toast key should correspond to a <data name="key" data-type="error"> element
-    const url = new URL(request.url);
-
-    // Use custom toast key if provided, otherwise use generic error
-    const toastKey = error instanceof ApiError && error.toastKey
-      ? error.toastKey
-      : "generic";
-
-    url.searchParams.set("toast", toastKey);
-
-    return Response.redirect(url.toString(), 303);
+    const headers = toastKey ? { "X-Toast": toastKey } : void 0;
+    return Response.json({ message }, { status, headers });
   }
+
+  // Form submission - redirect with toast using PRG pattern
+  // The toast key should correspond to a <data name="key" data-type="error"> element
+  const url = new URL(request.url);
+  if (toastKey) url.searchParams.set("toast", toastKey);
+
+  return Response.redirect(url, 303);
 };
 
 /**
@@ -64,17 +64,16 @@ export const createSuccessResponse = (
     "application/json",
   );
 
+  // API request - return JSON with toast in header
   if (acceptsJson) {
-    // API request - return JSON
-    return Response.json({ success: true, ...data });
-  } else {
-    // Form submission - redirect with toast
-    const url = new URL(request.url);
-    if (toastKey) {
-      url.searchParams.set("toast", toastKey);
-    }
-    return Response.redirect(url.toString(), 303);
+    const headers = toastKey ? { "X-Toast": toastKey } : void 0;
+    return Response.json(data, { headers });
   }
+
+  // Form submission - redirect with toast using PRG pattern
+  const url = new URL(request.url);
+  if (toastKey) url.searchParams.set("toast", toastKey);
+  return Response.redirect(url, 303);
 };
 
 /**
