@@ -98,7 +98,7 @@
 
 <slot name="modals">
   <dialog class="modal" closedby="any" id="send-mps-modal">
-    <form method="post" id="send-mps-form">
+    <form method="post" id="send-mps-form" enhance>
       <input
         type="hidden"
         name="mode"
@@ -171,7 +171,7 @@
     </form>
   </dialog>
   <dialog class="modal" closedby="any" id="revoke-mps-modal">
-    <form method="post">
+    <form method="post" enhance>
       <header>
         <h4>{revoke_mps, name: [NAME]}</h4>
       </header>

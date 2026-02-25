@@ -101,15 +101,59 @@ onDomReady(async () => {
   // Set mode when buttons are clicked
   createBtn.addEventListener("click", () => modeInput.value = "create");
   transferBtn.addEventListener("click", () => modeInput.value = "transfer");
-});
 
-type TransactionData = Transaction & {
-  vouch_count: number;
-  creator_name: string;
-};
+  // Handle form responses to update UI without reload
+  const handleFormResponse = (e: Event) => {
+    if (!(e instanceof CustomEvent)) return;
+    const { success, data: transaction } = e.detail as {
+      success: boolean;
+      data: Transaction;
+    };
 
-/** Loads transaction history loader with infinite scroll */
-onDomReady(() => {
+    if (!success || !transaction) return;
+
+    const form = e.target as HTMLFormElement;
+    form.reset();
+    form.closest("dialog")?.close();
+
+    // Update MPs balance — only if transaction is immediately active
+    const mpsBalanceEl = document.getElementById("mps-balance");
+    if (transaction.status === "active" && mpsBalanceEl) {
+      const currentBalanceText =
+        mpsBalanceEl.textContent?.match(/[\d,]+/)?.[0] || "0";
+      const currentBalance = parseInt(currentBalanceText.replace(/,/g, ""), 10);
+      const newBalance = currentBalance + transaction.delta;
+      const formattedBalance = new Intl.NumberFormat().format(newBalance);
+
+      // Preserve the {mps} suffix by updating just the number part
+      mpsBalanceEl.textContent = mpsBalanceEl.textContent?.replace(
+        /[\d,]+/,
+        formattedBalance,
+      ) || `${formattedBalance} mps`;
+    }
+
+    // Add new transaction with metadata
+    const transactionWithMeta = {
+      ...transaction,
+      creator_name: userInfo.email, // Current user created it
+      vouch_count: 0, // New transactions always have 0 vouches
+    };
+    createTransactionElement(transactionWithMeta, userInfo, true);
+  };
+
+  document.querySelectorAll("#send-mps-form, #revoke-mps-modal form").forEach(
+    (form) => form.addEventListener("form-response", handleFormResponse),
+  );
+
+  type TransactionData = Transaction & {
+    vouch_count: number;
+    creator_name: string;
+  };
+
+  // ########################################################
+  // # Load transaction history loader with infinite scroll #
+  // ########################################################
+
   const container = document.getElementById("transactions-list");
   if (!container) return;
 
@@ -153,6 +197,7 @@ onDomReady(() => {
   const createTransactionElement = (
     transaction: TransactionData,
     userInfo: UserInfo,
+    prepend = false,
   ): void => {
     const currentUserId = userInfo.userId;
     const canVouch = hasRole(userInfo.roles, "vouch_mt") &&
@@ -194,6 +239,15 @@ onDomReady(() => {
         "btn-revoke": canRevoke ? { "data-id": transaction.id + "" } : null,
       }),
     );
+
+    // Prepend to list if requested
+    if (prepend) {
+      const container = document.getElementById("transactions-list");
+      const newElement = transactionTemplater.instances.at(-1) as HTMLElement;
+      if (container && newElement) {
+        container.insertBefore(newElement, container.firstChild);
+      }
+    }
   };
 
   /** Load transactions from API */

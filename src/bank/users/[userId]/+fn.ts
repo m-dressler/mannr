@@ -207,14 +207,13 @@ export const onRequestPost = forwardErrors<Env, "userId", BankData>(async (
     : 0;
   const createdByUserId = ctx.data.token.userId;
 
-  // Create transaction record
-  const insertResult = await ctx.env.DB.prepare(
+  // Create transaction record and return it
+  const transaction = await ctx.env.DB.prepare(
     `INSERT INTO transactions (
       recipient_user_id, delta, reason, transaction_type, sender_user_id,
       created_by_user_id, status, required_vouches
-    ) VALUES (?, ?, ?, ?, ?, ?, '${
-      requiredVouches > 0 ? "pending" : "active"
-    }', ?)`,
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    RETURNING *`,
   ).bind(
     actualRecipientId,
     actualDelta,
@@ -222,17 +221,22 @@ export const onRequestPost = forwardErrors<Env, "userId", BankData>(async (
     transactionType,
     senderUserId,
     createdByUserId,
+    requiredVouches > 0 ? "pending" : "active",
     requiredVouches,
-  ).run();
+  ).first<Transaction>();
 
-  if (insertResult.error) {
+  if (!transaction) {
     // Rollback reserved funds if transaction creation failed
     if (isTransfer && senderUserId !== null) {
       await ctx.env.DB.prepare(
         "UPDATE users SET reserved_mps = reserved_mps - ? WHERE id = ?",
       ).bind(actualDelta, senderUserId).run();
     }
-    throw new ApiError(insertResult.error, 500, "transaction_failed");
+    throw new ApiError(
+      "Failed to create transaction",
+      500,
+      "transaction_failed",
+    );
   }
 
   // Directly apply transaction if no vouches are required
@@ -278,5 +282,8 @@ export const onRequestPost = forwardErrors<Env, "userId", BankData>(async (
     }
   }
 
-  return createSuccessResponse(ctx.request, undefined, "transaction_created");
+  const toastName = requiredVouches > 0
+    ? "transaction_created"
+    : "transaction_success";
+  return createSuccessResponse(ctx.request, transaction, toastName);
 });
