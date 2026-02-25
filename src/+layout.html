@@ -42,8 +42,9 @@
       <div>{footer.copyright, year: {cf:year}}</div>
     </footer>
     <slot name="modals" />
+    <div id="modal-blur" aria-hidden="true"></div>
 
-    <div id="toast-container">
+    <div id="toast-container" popover="manual">
       <template>
         <div class="toast" role="status" aria-live="polite">
           <span class="toast-message"></span>

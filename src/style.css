@@ -84,7 +84,15 @@
   }
 
   dialog.modal::backdrop {
-    @apply bg-black/50 backdrop-blur-xs;
+    @apply bg-transparent;
+  }
+
+  #modal-blur {
+    @apply fixed inset-0 z-20 bg-black/50 backdrop-blur-xs hidden;
+  }
+
+  body:has(dialog.modal[open]) #modal-blur {
+    @apply block;
   }
 
   dialog.modal > :first-child:last-child {
@@ -106,7 +114,7 @@
 
   /* Toast notifications */
   #toast-container {
-    @apply fixed top-4 right-4 z-50 flex flex-col gap-2;
+    @apply fixed top-4 right-4 z-50 flex flex-col gap-2 bg-[initial] left-auto;
   }
 
   .toast {

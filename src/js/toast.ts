@@ -10,17 +10,26 @@ import { HTMLTemplater } from "@md/html-templater";
 import onDomReady from "@md/on-dom-ready";
 
 onDomReady(() => {
-  const templater = new HTMLTemplater("#toast-container template");
+  const containerId = "#toast-container";
+  const container = document.querySelector<HTMLElement>(containerId)!;
+  const templater = new HTMLTemplater(`${containerId} template`);
+  const supportsPopover = "showPopover" in HTMLElement.prototype;
 
   const showToast = (toastName: string) => {
     const toastData = document.querySelector<HTMLDataElement>(
-      `#toast-container data[name="${toastName}"]`,
+      `${containerId} data[name="${toastName}"]`,
     );
     if (!toastData) {
       return console.warn(`No toast data for toast "${toastName}"`);
     }
 
     const type = toastData.getAttribute("data-type") || "success";
+
+    // Re-insert into top layer so toasts stack above any open modal dialogs
+    if (supportsPopover) {
+      container.togglePopover(false);
+      container.showPopover();
+    }
 
     templater.instantiate({
       ".toast": { className: (v: string) => `${v} toast-${type}` },
@@ -39,7 +48,9 @@ onDomReady(() => {
   };
 
   addEventListener("toast", (e) => {
-    if (e instanceof CustomEvent && typeof e.detail === "string") showToast(e.detail);
+    if (e instanceof CustomEvent && typeof e.detail === "string") {
+      showToast(e.detail);
+    }
   });
 
   const url = new URL(location.href);
