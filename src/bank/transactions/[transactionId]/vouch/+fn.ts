@@ -1,4 +1,5 @@
 import { hasRole } from "@lib/common/roles.ts";
+import { vouchTransaction } from "@lib/server/transaction/vouch.ts";
 import { BankData } from "../../../+types.ts";
 
 const isValidTransactionId = (id: string | string[]): id is string =>
@@ -51,13 +52,11 @@ export const onRequestPost: PagesFunction<Env, "transactionId", BankData> =
     }
 
     // Insert vouch (will fail with UNIQUE constraint if already vouched)
-    const vouchResult = await ctx.env.DB.prepare(
-      `INSERT INTO transaction_vouches (transaction_id, voucher_user_id)
-       VALUES (?, ?)`,
-    ).bind(transactionId, voucherUserId).run().catch((error: Error) => ({
-      success: false,
-      error: error.message,
-    }));
+    const vouchResult = await vouchTransaction(
+      ctx.env.DB,
+      transaction.id,
+      voucherUserId,
+    );
 
     if (vouchResult.error) {
       // Check if it's a duplicate vouch

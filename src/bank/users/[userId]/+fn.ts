@@ -7,6 +7,7 @@ import {
 } from "@lib/server/error.ts";
 import { getLocale } from "@lib/server/locale.ts";
 import { template } from "@lib/server/template.ts";
+import { vouchTransaction } from "@lib/server/transaction/vouch.ts";
 import { toUiUser } from "@lib/server/user.ts";
 import { BankData } from "../../+types.ts";
 import BANK_METADATA_RAW from "../../meta.json" with { type: "json" };
@@ -207,6 +208,9 @@ export const onRequestPost = forwardErrors<Env, "userId", BankData>(async (
     : 0;
   const createdByUserId = ctx.data.token.userId;
 
+  /** If created on other user, count as first vouch */
+  const existingVouches = createdByUserId !== senderUserId ? 1 : 0;
+
   // Create transaction record and return it
   const transaction = await ctx.env.DB.prepare(
     `INSERT INTO transactions (
@@ -221,7 +225,7 @@ export const onRequestPost = forwardErrors<Env, "userId", BankData>(async (
     transactionType,
     senderUserId,
     createdByUserId,
-    requiredVouches > 0 ? "pending" : "active",
+    requiredVouches > existingVouches ? "pending" : "active",
     requiredVouches,
   ).first<Transaction>();
 
@@ -239,8 +243,8 @@ export const onRequestPost = forwardErrors<Env, "userId", BankData>(async (
     );
   }
 
-  // Directly apply transaction if no vouches are required
-  if (requiredVouches === 0) {
+  // Directly apply transaction if vouches already met
+  if (existingVouches >= requiredVouches) {
     if (transactionType === "transfer" && senderUserId !== null) {
       // For transfers: deduct from sender, add to recipient, unreserve
       const senderUpdate = await ctx.env.DB.prepare(
@@ -280,6 +284,17 @@ export const onRequestPost = forwardErrors<Env, "userId", BankData>(async (
         );
       }
     }
+  }
+
+  // If existingVouches, add to DB
+  if (existingVouches > 0) {
+    const vouchResult = await vouchTransaction(
+      ctx.env.DB,
+      transaction.id,
+      createdByUserId,
+    );
+    // Ignore errors for now as transaction is still valid and createdByUserId is prevented from vouching anyway
+    if (vouchResult.error) console.error(vouchResult);
   }
 
   const toastName = requiredVouches > 0
