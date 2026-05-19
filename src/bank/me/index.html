@@ -1,7 +1,9 @@
 <slot name="head">
   <script src="/bank/me/index.ts" inline></script>
 </slot>
-<h1>Profile</h1>
+<slot name="title">{profile} | {bank}</slot>
+
+<h1>{profile}</h1>
 
 <a
   href="//gravatar.com/profile"
@@ -49,31 +51,57 @@
       stroke-linejoin="round"
       stroke-width="16"
     />
-    <line
-      x1="95.49"
-      y1="215.49"
-      x2="40.51"
-      y2="160.51"
-      fill="none"
-      stroke="currentColor"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-      stroke-width="16"
-    />
   </svg>
 </a>
 
-<div>
-  <h3>{roles}</h3>
-  <ul class="mt-2 flex flex-wrap gap-1">
+<h2 id="display-name" class="mt-3 mb-0 text-2xl font-bold"></h2>
+<p id="email-line" class="text-gray-400 mb-3"></p>
+
+<dl class="grid grid-cols-2 gap-x-6 gap-y-1 max-w-md mb-6">
+  <dt class="text-gray-400">{balance}</dt>
+  <dd id="stat-mps" class="text-right font-semibold"></dd>
+
+  <dt class="text-gray-400" data-show-if-reserved>{reserved}</dt>
+  <dd
+    id="stat-reserved"
+    class="text-right text-yellow-500"
+    data-show-if-reserved
+  ></dd>
+
+  <dt class="text-gray-400" data-show-if-reserved>{available}</dt>
+  <dd
+    id="stat-available"
+    class="text-right font-semibold"
+    data-show-if-reserved
+  ></dd>
+
+  <dt class="text-gray-400">{joined}</dt>
+  <dd id="stat-joined" class="text-right"></dd>
+
+  <dt class="text-gray-400" data-show-if-referrer>{invited_by}</dt>
+  <dd id="stat-referrer" class="text-right" data-show-if-referrer></dd>
+
+  <dt class="text-gray-400" data-show-if-invited>{you_invited}</dt>
+  <dd id="stat-invited" class="text-right" data-show-if-invited></dd>
+</dl>
+
+<div class="max-w-md w-full">
+  <h3 class="font-bold text-lg mb-2">{roles}</h3>
+  <ul class="space-y-1">
     {#each roles_details as role}
     <li
-      id="role-{role.id}"
-      class="hidden bg-gray-200 text-gray-800 text-xs px-2 py-1 rounded-full mr-1"
-      title="{role.description}"
+      id="role-row-{role.id}"
+      class="flex items-start gap-2 p-2 rounded border border-gray-700"
     >
-      {role.name}
+      <span class="text-lg leading-none" data-role-indicator>○</span>
+      <div>
+        <p class="font-semibold">{role.name}</p>
+        <p class="text-sm text-gray-400">{role.description}</p>
+      </div>
     </li>
     {/each}
   </ul>
 </div>
+
+<a id="invite-link" href="/bank/invite" class="mt-6 inline-block" hidden
+>{invite_someone} →</a>

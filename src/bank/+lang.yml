@@ -6,6 +6,15 @@ en:
   bank: Bank
   leaderboard: Leaderboard
 
+  profile: Profile
+  balance: Balance
+  reserved: Reserved
+  available: Available
+  joined: Joined
+  invited_by: Invited by
+  you_invited: You invited
+  invite_someone: Invite someone
+
   roles: Roles
   roles_details:
     - id: access_platform
