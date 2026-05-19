@@ -413,16 +413,21 @@ onDomReady(async () => {
       banControls.hidden = false;
     }
 
-    const onBanResponse = (e: Event) => {
+    const onBanResponse = (toastKey: string) => (e: Event) => {
       if (!(e instanceof CustomEvent)) return;
       if (!e.detail?.success) return;
-      // Page reload is the cheapest way to refresh the cached server-rendered
-      // ban state (NAME, banner, buttons) — the operation is rare enough that
-      // a soft reload is fine UX.
-      location.reload();
+      // Reload to refresh the server-rendered ban banner / button state.
+      // Carry the toast key in the URL so it survives the reload — the
+      // X-Toast event fires before the reload and would otherwise be lost.
+      const url = new URL(location.href);
+      url.searchParams.set("toast", toastKey);
+      location.assign(url.toString());
     };
-    banForm?.addEventListener("form-response", onBanResponse);
-    unbanForm?.addEventListener("form-response", onBanResponse);
+    banForm?.addEventListener("form-response", onBanResponse("user_banned"));
+    unbanForm?.addEventListener(
+      "form-response",
+      onBanResponse("user_unbanned"),
+    );
   }
 });
 
