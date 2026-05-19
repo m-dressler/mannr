@@ -1,0 +1,29 @@
+en:
+  invite_user_title: Invite to Mannr
+  invite_help: >
+    We'll email a single-use sign-in link valid for 7 days. The
+    invitee inherits whichever roles you grant — you can only grant
+    roles you already hold yourself.
+  invite_denied: >
+    You don't have the role required to invite people. Ask someone with
+    the "Invite User" role to grant it to you first.
+  first_name: First name
+  last_name: Last name
+  email: Email
+  grant_roles: Grant roles
+  send_invite: Send invite
+  cancel: Cancel
+
+  toast:
+    invite_sent: Invite sent ✉️
+  invite_errors:
+    - name: invite_invalid_input
+      message: Please fill in every field correctly.
+    - name: invite_email_taken
+      message: That email is already on Mannr.
+    - name: invite_unauthorised_roles
+      message: You tried to grant a role you don't hold yourself.
+    - name: invite_failed
+      message: We couldn't send the invite. Please try again.
+    - name: insufficient_permissions
+      message: You don't have permission to invite users.

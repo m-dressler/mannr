@@ -1,0 +1,101 @@
+<slot name="head">
+  <script src="/js/form.ts" async></script>
+  <script src="/js/toast.ts" async></script>
+  <script src="./index.ts" inline></script>
+</slot>
+<slot name="title">{invite_user_title} | {bank}</slot>
+
+<h1>{invite_user_title}</h1>
+
+<p
+  id="invite-denied"
+  class="text-red max-w-md"
+  style="display: none"
+>{invite_denied}</p>
+
+<form
+  id="invite-form"
+  method="post"
+  enhance
+  class="w-full max-w-md space-y-4"
+  style="display: none"
+>
+  <p class="text-gray-400">{invite_help}</p>
+
+  <label class="block">
+    <span class="block text-sm mb-1">{first_name}</span>
+    <input
+      type="text"
+      name="first_name"
+      autocomplete="given-name"
+      required
+      class="w-full"
+    >
+  </label>
+
+  <label class="block">
+    <span class="block text-sm mb-1">{last_name}</span>
+    <input
+      type="text"
+      name="last_name"
+      autocomplete="family-name"
+      required
+      class="w-full"
+    >
+  </label>
+
+  <label class="block">
+    <span class="block text-sm mb-1">{email}</span>
+    <input
+      type="email"
+      name="email"
+      autocomplete="email"
+      required
+      class="w-full"
+    >
+  </label>
+
+  <input type="hidden" name="inviter_display_name" id="inviter_display_name" />
+
+  <fieldset class="space-y-1">
+    <legend class="text-sm mb-2">{grant_roles}</legend>
+    {#each roles_details as role}
+    <label
+      id="invite-role-{role.id}"
+      class="flex items-start gap-2 p-2 rounded border border-gray-700"
+      style="display: none"
+    >
+      <input
+        type="checkbox"
+        name="role_{role.id}"
+        data-role-id="{role.id}"
+        class="mt-1"
+      >
+      <span>
+        <span class="font-semibold block">{role.name}</span>
+        <span class="block text-sm text-gray-400">{role.description}</span>
+      </span>
+    </label>
+    {/each}
+  </fieldset>
+
+  <div class="flex gap-2">
+    <a href="/bank/me" class="text-gray-400 underline">{cancel}</a>
+    <button type="submit" class="ml-auto">{send_invite}</button>
+  </div>
+</form>
+
+<slot name="toasts">
+  <data
+    name="invite_sent"
+    data-type="success"
+    value="{toast.invite_sent}"
+  ></data>
+  {#each invite_errors as error}
+  <data
+    name="{error.name}"
+    data-type="error"
+    value="{error.message}"
+  ></data>
+  {/each}
+</slot>
