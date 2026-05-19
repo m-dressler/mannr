@@ -12,10 +12,15 @@ en:
   sent: Sent
   loading: Loading
   custom_reason: Custom Reason
+  banned_banner: This user is banned and cannot access the Mannr Bank.
+  ban_user: Ban user
+  unban_user: Unban user
   toast:
     transaction_success: Transaction successful!
     transaction_created: Transaction created and pending vouches
     mps_updated: "{name}'s MPs have been updated"
+    user_banned: User banned
+    user_unbanned: User unbanned
     errors:
       - name: generic
         message: An error occurred. Please try again.
@@ -33,3 +38,15 @@ en:
         message: Failed to create transaction. Please try again.
       - name: self_transfer
         message: Cannot transfer MPs to yourself.
+      - name: ban_self
+        message: You can't ban yourself.
+      - name: ban_peer
+        message: You can't ban another admin who can also ban.
+      - name: already_banned
+        message: User is already banned.
+      - name: not_banned
+        message: User is not banned.
+      - name: ban_failed
+        message: Couldn't ban that user. Please try again.
+      - name: unban_failed
+        message: Couldn't unban that user. Please try again.

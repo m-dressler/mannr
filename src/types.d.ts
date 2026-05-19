@@ -13,6 +13,7 @@ type User = {
   mps: number;
   reserved_mps: number;
   roles: number;
+  banned_at: number | null;
 };
 
 /** The user information as available in the UI with private info redacted */

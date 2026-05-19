@@ -67,6 +67,8 @@ export const onRequestGet: PagesFunction<Env, "userId", BankData> = async ({
     AVATAR_SRC: toGravatarUrl(user.gravatarId),
     AVATAR_ALT: user.first_name + ` profile picture`,
     GRAVATAR_ID: user.gravatarId,
+    USER_ID: user.id,
+    BANNED: user.banned_at !== null ? "true" : "false",
   });
 
   return new Response(html, htmlResponse);

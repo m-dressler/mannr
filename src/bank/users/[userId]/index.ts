@@ -380,6 +380,50 @@ onDomReady(async () => {
       if (id) handleRevoke(id);
     }
   });
+
+  // ##############################
+  // # Ban / unban control toggle #
+  // ##############################
+
+  const banControls = document.getElementById("ban-controls");
+  if (banControls) {
+    const targetIsBanned = banControls.dataset.banned === "true";
+    const targetUserId = Number(banControls.dataset.userId);
+    const viewerCanBan = hasRole(userInfo.roles, "ban_users") &&
+      targetUserId !== userInfo.userId;
+
+    const banForm = banControls.querySelector<HTMLFormElement>(
+      "[data-role=ban-form]",
+    );
+    const unbanForm = banControls.querySelector<HTMLFormElement>(
+      "[data-role=unban-form]",
+    );
+    const banner = banControls.querySelector<HTMLElement>(
+      "[data-role=banned-banner]",
+    );
+
+    if (banner) banner.hidden = !targetIsBanned;
+
+    if (viewerCanBan) {
+      banControls.hidden = false;
+      if (banForm) banForm.hidden = targetIsBanned;
+      if (unbanForm) unbanForm.hidden = !targetIsBanned;
+    } else if (targetIsBanned) {
+      // Non-admins still see the banner so the profile is honest about it
+      banControls.hidden = false;
+    }
+
+    const onBanResponse = (e: Event) => {
+      if (!(e instanceof CustomEvent)) return;
+      if (!e.detail?.success) return;
+      // Page reload is the cheapest way to refresh the cached server-rendered
+      // ban state (NAME, banner, buttons) — the operation is rare enough that
+      // a soft reload is fine UX.
+      location.reload();
+    };
+    banForm?.addEventListener("form-response", onBanResponse);
+    unbanForm?.addEventListener("form-response", onBanResponse);
+  }
 });
 
 replaceProfilePicture();

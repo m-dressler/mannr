@@ -46,6 +46,38 @@
   </button>
 </div>
 
+<div
+  id="ban-controls"
+  data-user-id="[USER_ID]"
+  data-banned="[BANNED]"
+  class="mb-6 flex flex-col items-center gap-2"
+  hidden
+>
+  <p
+    data-role="banned-banner"
+    class="text-yellow-500 text-sm"
+    hidden
+  >{banned_banner}</p>
+  <form
+    method="post"
+    enhance
+    action="/bank/users/[USER_ID]/ban"
+    data-role="ban-form"
+    hidden
+  >
+    <button type="submit" class="bg-red text-sm py-1">{ban_user}</button>
+  </form>
+  <form
+    method="post"
+    enhance
+    action="/bank/users/[USER_ID]/unban"
+    data-role="unban-form"
+    hidden
+  >
+    <button type="submit" class="bg-green-700 text-sm py-1">{unban_user}</button>
+  </form>
+</div>
+
 <section class="transactions-section w-full max-w-2xl">
   <div class="flex flex-wrap justify-between items-center gap-2 mb-4">
     <h2 class="text-2xl font-bold">{transaction_history}</h2>
@@ -262,6 +294,16 @@
     name="transaction_created"
     data-type="success"
     value="{toast.transaction_created}"
+  ></data>
+  <data
+    name="user_banned"
+    data-type="success"
+    value="{toast.user_banned}"
+  ></data>
+  <data
+    name="user_unbanned"
+    data-type="success"
+    value="{toast.user_unbanned}"
   ></data>
   {#each toast.errors as error}
   <data

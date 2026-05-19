@@ -11,7 +11,8 @@ CREATE TABLE IF NOT EXISTS users (
     mps INTEGER NOT NULL DEFAULT 0,
     reserved_mps INTEGER NOT NULL DEFAULT 0,
     roles INTEGER NOT NULL DEFAULT 0,
-    referrer INTEGER
+    referrer INTEGER,
+    banned_at INTEGER
 );
 
 -- Indexes for performance
