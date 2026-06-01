@@ -148,6 +148,9 @@ onDomReady(async () => {
   type TransactionData = Transaction & {
     vouch_count: number;
     creator_name: string;
+    sender_name?: string | null;
+    recipient_name?: string;
+    direction?: "incoming" | "outgoing";
   };
 
   // ########################################################
@@ -201,16 +204,19 @@ onDomReady(async () => {
   ): void => {
     const currentUserId = userInfo.userId;
     const canVouch = hasRole(userInfo.roles, "vouch_mt") &&
-      transaction.recipient_user_id !== userInfo.userId &&
-      transaction.created_by_user_id !== userInfo.userId;
+      transaction.recipient_user_id !== currentUserId &&
+      transaction.created_by_user_id !== currentUserId &&
+      transaction.sender_user_id !== currentUserId;
     const canRevoke = hasRole(userInfo.roles, "revoke_transaction") &&
       transaction.status !== "revoked";
 
     // Handle actions
-    const canVouchThis = canVouch &&
-      transaction.status === "pending" &&
-      transaction.created_by_user_id !== currentUserId &&
-      transaction.recipient_user_id !== currentUserId;
+    const canVouchThis = canVouch && transaction.status === "pending";
+
+    // Outgoing transfers debit the viewed user — flip sign for display
+    const displayDelta = transaction.direction === "outgoing"
+      ? -transaction.delta
+      : transaction.delta;
 
     const toSlots = (map: TemplateElementMapper): TemplateElementMapper =>
       Object.fromEntries(
@@ -228,9 +234,9 @@ onDomReady(async () => {
         reason: getReasonText(transaction),
         creator: transaction.creator_name,
         delta: {
-          classList: [`text-${transaction.delta >= 0 ? "green" : "red"}-500`],
-          textContent: `${transaction.delta >= 0 ? "+" : ""}${
-            new Intl.NumberFormat().format(transaction.delta)
+          classList: [`text-${displayDelta >= 0 ? "green" : "red"}-500`],
+          textContent: `${displayDelta >= 0 ? "+" : ""}${
+            new Intl.NumberFormat().format(displayDelta)
           } MPs`,
         },
         // Remove actions if nothing can be done
