@@ -3,6 +3,7 @@ en:
   send_mps_to: Send MPs to {name}
   transfer: Transfer
   create: Create
+  revoke: Revoke
   reason: Reason
   available_balance: Available balance
   revoke_mps: Revoke Tokens from {name}
