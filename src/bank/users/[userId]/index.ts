@@ -141,7 +141,7 @@ onDomReady(async () => {
     createTransactionElement(transactionWithMeta, userInfo, true);
   };
 
-  document.querySelectorAll("#send-mps-form, #revoke-mps-modal form").forEach(
+  document.querySelectorAll("#send-mps-form, #revoke-mps-form").forEach(
     (form) => form.addEventListener("form-response", handleFormResponse),
   );
 
