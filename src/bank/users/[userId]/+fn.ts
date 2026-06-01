@@ -208,8 +208,14 @@ export const onRequestPost = forwardErrors<Env, "userId", BankData>(async (
     : 0;
   const createdByUserId = ctx.data.token.userId;
 
-  /** If created on other user, count as first vouch */
-  const existingVouches = createdByUserId !== senderUserId ? 1 : 0;
+  /**
+   * Creator's auto-vouch counts only if they are an outside party — i.e.
+   * neither the sender nor the recipient of the transaction. Without this
+   * a self-mint would silently grant the creator a free vouch on themselves.
+   */
+  const isThirdParty = createdByUserId !== senderUserId &&
+    createdByUserId !== actualRecipientId;
+  const existingVouches = isThirdParty ? 1 : 0;
 
   // Create transaction record and return it
   const transaction = await ctx.env.DB.prepare(

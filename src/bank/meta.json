@@ -9,9 +9,9 @@
     "6": "revoke_transaction"
   },
   "vouchThresholds": [
-    { "minAbsDelta": 25, "requiredVouches": 1 },
-    { "minAbsDelta": 100, "requiredVouches": 2 },
-    { "minAbsDelta": 1000, "requiredVouches": 3 }
+    { "minAbsDelta": 25, "requiredVouches": 2 },
+    { "minAbsDelta": 100, "requiredVouches": 3 },
+    { "minAbsDelta": 1000, "requiredVouches": 4 }
   ],
   "standardTransactions": {
     "0": ["High Pitch Voice", -500],
