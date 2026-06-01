@@ -1,5 +1,5 @@
 import EMAIL_TEMPLATE from "@lib/server/emails/sign-up.html" with {
-  type: "text"
+  type: "text",
 };
 import { getLocale } from "@lib/server/locale.ts";
 import { template } from "@lib/server/template.ts";
@@ -85,16 +85,25 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
   }
 
   const formData = await request.formData();
-  const email = formData.get("email");
-  if (
-    !(
-      typeof email === "string" &&
-      EMAIL_VALIDATION_REGEX.test(email.toLowerCase())
-    )
-  ) {
-    // Invalid request doesn't cause throttling
+  const emailRaw = formData.get("email");
+
+  // Invalid request doesn't cause throttling yet
+  if (typeof emailRaw !== "string") {
     return Response.json(
-      { message: `Invalid email provided (${email})` },
+      {
+        message: emailRaw
+          ? 'Invalid type for "email": expected string but got File'
+          : 'Value for "email" must be provided',
+      },
+      { status: 400 },
+    );
+  }
+
+  /** Normalized email value */
+  const email = emailRaw.trim().toLowerCase();
+  if (!EMAIL_VALIDATION_REGEX.test(email)) {
+    return Response.json(
+      { message: `Invalid value for "email": "${emailRaw}"` },
       { status: 400 },
     );
   }
