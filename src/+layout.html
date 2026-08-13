@@ -4,15 +4,17 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title><slot name="title">{pageName}</slot></title>
+    <meta name="description" content="{description}" />
     <link rel="stylesheet" href="/style.css" />
     <link rel="shortcut icon" href="/logo.svg" />
     <link rel="manifest" href="/manifest.json" />
+    <meta property="og:site_name" content="{pageName}" />
+    <meta property="og:type" content="{og_type}" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <!-- The canonical URL and og:url are injected per page at build time by +plugin.ts -->
     <slot name="og:tags">
-      <meta property="og:title" content="{pageName} - Home Of Masculinity" />
-      <meta
-        property="og:description"
-        content="The home for all your masculinity needs, dreams and wants."
-      />
+      <meta property="og:title" content="{og_title}" />
+      <meta property="og:description" content="{description}" />
       <meta property="og:image" content="/logo.webp" />
     </slot>
     <slot name="head" />

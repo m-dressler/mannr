@@ -1,5 +1,14 @@
 en:
   heading: John Henry
+  og_title: John Henry — the idol of Mannr
+  og_type: article
+  description: >-
+    Why Mannr holds up John Henry, the steel-driving man of American folklore, as
+    an idol: strength measured not only in muscle but in solidarity with the men
+    working beside him.
+  # Taken from the commit that added this page; update when the text changes
+  published: "2025-07-15"
+  modified: "2025-07-15"
   paragraphs:
     - |
         John Henry, a legendary figure in American folklore, is celebrated not only

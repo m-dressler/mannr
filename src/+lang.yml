@@ -4,15 +4,31 @@ global:
   pageName: "Mannr"
   mps: "MPs"
 
+  # Default for the head tags in +layout.html. A page becomes an article — and
+  # so gains schema.org Article data — by setting `og_type: article` in its own
+  # +lang.yml, alongside `description` and optional `published`/`modified`.
+  og_type: website
+
 en:
   bank: "Bank"
   heading: Mannr - A better way to life
   subheading: Life is full of mysteries, life is full of hardships. Mannr gives you a path to salvation.
+  og_title: Mannr — Home of Masculinity
+  description: >-
+    Mannr is a teaching on masculinity — action, strength and focus — with
+    stories, rituals and a peer recognition system built around them.
   section2:
     - "\"A person is only ever as good as his actions are.\""
     - "Unfortunately, many people today struggle with doing the right thing."
     - "There are many misguided paths, it is hard to know what's right and what's wrong."
     - "Mannr is a teaching beloved by many for its clear guidance."
+
+  john_henry_link: John Henry — the idol of Mannr
+
+  not_found:
+    heading: Oh no — this page does not exist!
+    body: The page you were looking for has moved, or never existed in the first place.
+    home: Return Home
 
   footer:
     # See https://news.ycombinator.com/item?id=34880663 for why the year can be static at build time

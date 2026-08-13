@@ -9,11 +9,13 @@
     "lib": ["esnext", "dom"]
   },
   "imports": {
+    "@md/cf-page": "jsr:@md/cf-page@^0.8.9",
     "@src/": "./src/",
     "@lib/": "./lib/",
     "@md/dom-ready-promise": "jsr:@md/dom-ready-promise@^0.0.0",
     "@md/html-templater": "jsr:@md/html-templater@^0.1",
     "@md/on-dom-ready": "jsr:@md/on-dom-ready@^0.0.1",
+    "@std/assert": "jsr:@std/assert@^1.0.19",
     "@std/encoding": "jsr:@std/encoding@^1.0.10",
     "blueimp-md5": "npm:blueimp-md5@^2.19.0",
     "fuzzysort": "npm:fuzzysort@^3.1.0",
