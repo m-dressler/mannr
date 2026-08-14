@@ -1,0 +1,93 @@
+<slot name="title">{page_title} | {pageName}</slot>
+
+<h1>{heading}</h1>
+
+<article class="article">
+  <p class="lead">{@md summary}</p>
+
+  <section>
+    {#each opening as para}
+    <p>{@md para}</p>
+    {/each}
+
+    <nav class="toc" aria-labelledby="toc-heading">
+      <strong id="toc-heading">{toc_heading}</strong>
+      <ol>
+        {#each toc as entry}
+        <li><a href="{entry.href}">{entry.label}</a></li>
+        {/each}
+      </ol>
+    </nav>
+  </section>
+
+  <section>
+    <h2>{elements_heading}</h2>
+    <p>{elements_intro}</p>
+    {#each elements as element}
+    <h3>{element.title}</h3>
+    <p>{@md element.body}</p>
+    {/each}
+    {#each thesis_paragraphs as para}
+    <p>{@md para}</p>
+    {/each}
+    <p class="pullquote">{thesis_pullquote}</p>
+  </section>
+
+  <section>
+    <h2>{chef_heading}</h2>
+    {#each chef_paragraphs as para}
+    <p>{@md para}</p>
+    {/each}
+  </section>
+
+  <section>
+    <h2>{tempo_heading}</h2>
+    {#each tempo_paragraphs as para}
+    <p>{@md para}</p>
+    {/each}
+  </section>
+
+  <section>
+    <h2>{pairs_heading}</h2>
+    <p>{pairs_intro}</p>
+    {#each pairs as pair}
+    <h3>{pair.title}</h3>
+    <p>{@md pair.body}</p>
+    {/each}
+  </section>
+
+  <section>
+    <h2>{arc_heading}</h2>
+    <p>{arc_intro}</p>
+    {#each movements as movement}
+    <h3>{movement.title}</h3>
+    <p>{@md movement.body}</p>
+    {/each}
+    <p>{shape_note}</p>
+  </section>
+
+  <section>
+    <h2>{not_heading}</h2>
+    {#each not_questions as item}
+    <h3>{item.question}</h3>
+    <p>{@md item.answer}</p>
+    {/each}
+  </section>
+
+  <section>
+    <h2>{rules_heading}</h2>
+    <p>{rules_intro}</p>
+    {#each rules as rule}
+    <p>{@md rule}</p>
+    {/each}
+  </section>
+
+  <section>
+    <h2>{close_heading}</h2>
+    {#each close_paragraphs as para}
+    <p>{@md para}</p>
+    {/each}
+  </section>
+</article>
+
+<a href="/" class="mt-8 inline-block">&larr; {back_home}</a>

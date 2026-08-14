@@ -78,6 +78,64 @@
 }
 
 @layer components {
+  /**
+   * Long-form article, sized and spaced for sustained reading rather than
+   * scanning. Body copy sits slightly below full white: at this length, pure
+   * #f7f7f7 on the near-black background halates and tires the eye, so full
+   * brightness is reserved for headings and bolded phrases, which gives the
+   * page its hierarchy for free.
+   */
+  .article {
+    @apply max-w-[42rem] text-[1.0625rem]/[1.75] text-main/80;
+  }
+
+  .article > section + section {
+    @apply mt-12 pt-10 border-t border-main/10;
+  }
+
+  .article :is(h2, h3) {
+    @apply text-main scroll-mt-6;
+  }
+
+  .article h2 {
+    @apply text-2xl font-bold mb-4;
+  }
+
+  .article h3 {
+    @apply text-lg font-semibold mt-6 mb-1;
+  }
+
+  .article p {
+    @apply mb-4;
+  }
+
+  .article strong {
+    @apply text-main font-semibold;
+  }
+
+  /** The standfirst: a self-contained definition, set apart from the essay proper */
+  .article .lead {
+    @apply text-xl/relaxed text-main border-l-2 border-red pl-5;
+  }
+
+  /** The one line the rest of the theory rests on */
+  .article .pullquote {
+    @apply text-2xl/snug font-bold text-main text-center my-10;
+  }
+
+  .article .toc {
+    @apply border border-main/10 rounded-lg p-5 text-base;
+  }
+
+  .article .toc ol {
+    @apply grid sm:grid-cols-2 gap-x-8 gap-y-1 mt-2 list-decimal list-inside;
+  }
+
+  .article .toc a {
+    @apply text-main/75 visited:text-main/75 no-underline hover:text-red
+      hover:underline;
+  }
+
   dialog.modal[open] {
     @apply mx-auto my-auto bg-transparent items-center justify-center p-4 z-10
       text-white;
