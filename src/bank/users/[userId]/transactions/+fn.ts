@@ -1,4 +1,18 @@
+import {
+  getTransactionDirection,
+  parseTransactionDirection,
+  type TransactionDirection,
+} from "@lib/common/transactionDirection.ts";
 import { BankData } from "../../../+types.ts";
+
+/**
+ * SQL condition selecting a user's transactions for each direction. Each binds
+ * the user id exactly once. Must agree with {@link getTransactionDirection}.
+ */
+const DIRECTION_CONDITIONS: Record<TransactionDirection, string> = {
+  incoming: "t.recipient_user_id = ?",
+  outgoing: "t.sender_user_id = ? AND t.transaction_type = 'transfer'",
+};
 
 const isValidUserId = (userId: string | string[]): userId is string =>
   typeof userId === "string" && /^[0-9]+$/.test(userId);
@@ -31,18 +45,19 @@ export const onRequestGet: PagesFunction<Env, "userId", BankData> = async ({
   const url = new URL(request.url);
   const limit = Math.min(parseInt(url.searchParams.get("limit") || "20"), 100);
   const offset = parseInt(url.searchParams.get("offset") || "0");
+  const direction = parseTransactionDirection(
+    url.searchParams.get("direction"),
+  );
 
-  // Include transactions where user is recipient OR outgoing-transfer sender
   const { results: transactions } = await env.DB.prepare(
     `SELECT t.*, COUNT(tv.id) as vouch_count
        FROM transactions t
        LEFT JOIN transaction_vouches tv ON t.id = tv.transaction_id
-       WHERE t.recipient_user_id = ?
-          OR (t.sender_user_id = ? AND t.transaction_type = 'transfer')
+       WHERE ${DIRECTION_CONDITIONS[direction]}
        GROUP BY t.id
        ORDER BY t.created_at DESC
        LIMIT ? OFFSET ?`,
-  ).bind(userRaw.id, userRaw.id, limit, offset).all<
+  ).bind(userRaw.id, limit, offset).all<
     Transaction & { vouch_count: number }
   >();
 
@@ -74,7 +89,7 @@ export const onRequestGet: PagesFunction<Env, "userId", BankData> = async ({
       ? userNames.get(t.sender_user_id) ?? null
       : null,
     recipient_name: userNames.get(t.recipient_user_id) || "Unknown",
-    direction: t.sender_user_id === userRaw.id ? "outgoing" : "incoming",
+    direction: getTransactionDirection(t, userRaw.id),
   }));
 
   return Response.json(enrichedTransactions);

@@ -8,6 +8,8 @@ en:
   available_balance: Available balance
   revoke_mps: Revoke Tokens from {name}
   transaction_history: Transaction History
+  received: Received
+  sent: Sent
   loading: Loading
   custom_reason: Custom Reason
   toast:

@@ -1,6 +1,11 @@
 import { getUserInfo } from "@lib/client/getUserInfo.ts";
 import { replaceProfilePicture } from "@lib/client/replaceProfilePicture.ts";
 import { hasRole } from "@lib/common/roles.ts";
+import {
+  getTransactionDirection,
+  parseTransactionDirection,
+  type TransactionDirection,
+} from "@lib/common/transactionDirection.ts";
 import { HTMLTemplater, type TemplateElementMapper } from "@md/html-templater";
 import onDomReady from "@md/on-dom-ready";
 import fuzzysort from "fuzzysort";
@@ -75,6 +80,13 @@ onDomReady(async () => {
     );
   }
 
+  /** Transaction history tab being viewed, taken from `?direction=` */
+  const direction = parseTransactionDirection(
+    new URLSearchParams(location.search).get("direction"),
+  );
+  document.querySelector(`[data-direction=${direction}]`)
+    ?.setAttribute("aria-current", "page");
+
   // Handle balance display and create button visibility
   const userInfo = await getUserInfo();
 
@@ -132,6 +144,11 @@ onDomReady(async () => {
       ) || `${formattedBalance} mps`;
     }
 
+    // Only list it if it belongs to the tab being viewed
+    if (getTransactionDirection(transaction, profileUserId) !== direction) {
+      return;
+    }
+
     // Add new transaction with metadata
     const transactionWithMeta = {
       ...transaction,
@@ -150,7 +167,7 @@ onDomReady(async () => {
     creator_name: string;
     sender_name?: string | null;
     recipient_name?: string;
-    direction?: "incoming" | "outgoing";
+    direction?: TransactionDirection;
   };
 
   // ########################################################
@@ -268,7 +285,7 @@ onDomReady(async () => {
     try {
       const response = await fetch(
         location.pathname.replace(/\/+$/, "") +
-          `/transactions?limit=${limit}&offset=${offset}`,
+          `/transactions?limit=${limit}&offset=${offset}&direction=${direction}`,
       );
       const transactions: TransactionData[] = await response.json();
 
