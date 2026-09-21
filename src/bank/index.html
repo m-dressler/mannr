@@ -11,7 +11,11 @@
 </slot>
 
 <h1>{leaderboard}</h1>
-<ol class="grid gap-8 grid-cols-3 max-w-lg" data-type="leaderboard">
+<ol
+  class="grid gap-8 grid-cols-3 max-w-lg"
+  data-type="leaderboard"
+  data-hide-on-search
+>
   <template>
     <li>
       <a href="/bank/users/" class="flex flex-col items-center">
@@ -21,8 +25,8 @@
           class="rounded-full mb-4 border-main border-2"
           style="view-transition-name: user-avatar"
         />
-        <h4 class="text-lg font-bold" style="view-transition-name: user-name">
-        </h4>
+        <h4 class="text-lg font-bold"
+          style="view-transition-name: user-name"></h4>
         <p class="text-gray-500 text-s" style="view-transition-name: user-info">
           {mps}
         </p>
@@ -30,30 +34,60 @@
     </li>
   </template>
 </ol>
-<table data-type="user-list" class="mt-4">
-  <template>
-    <tr>
-      <td class="p-1 pr-2 align-middle">
-        <img
-          src=""
-          alt="User Image"
-          class="rounded-full border-main border-2 w-8 h-8"
-          style="view-transition-name: user-avatar"
-        />
-      </td>
-      <td class="pr-2 align-middle">
-        <a href="/bank/users/" class="flex items-center">
-          <h4 class="text-lg font-bold" style="view-transition-name: user-name">
-          </h4>
-        </a>
-      </td>
-      <td class="align-middle">
-        <p class="text-gray-500 text-s" style="view-transition-name: user-info">
+
+<div>
+  <search class="flex items-center gap-1 mt-6 mb-1">
+    <input
+      type="search"
+      id="user-search"
+      class="grow h-6 px-1"
+      placeholder="{search_users}"
+    >
+    <img
+      src="@lib/client/icons/search.svg"
+      inline
+      class="w-6 h-6"
+      fill="white"
+    >
+  </search>
+
+  <table data-type="user-list" class="mt-2">
+    <template>
+      <tr>
+        <td class="p-1 pr-2 align-middle">
+          <img
+            src=""
+            alt="User Image"
+            class="rounded-full border-main border-2 w-8 h-8"
+            style="view-transition-name: user-avatar"
+          />
+        </td>
+        <td class="pr-2 align-middle">
+          <a href="/bank/users/" class="flex items-center">
+            <h4 class="text-lg font-bold"
+              style="view-transition-name: user-name"></h4>
+          </a>
+        </td>
+        <td class="align-middle">
+          <p class="text-gray-500 text-s"
+            style="view-transition-name: user-info">
           {mps}
         </p>
-      </td>
-    </tr>
-  </template>
-</table>
+        </td>
+      </tr>
+    </template>
+  </table>
+  <p
+    id="user-list-empty"
+    class="mt-4 text-gray-500"
+    style="display: none"
+  >{no_users_found}</p>
+  <button
+    id="user-list-load-more"
+    type="button"
+    class="mt-4 bg-gray-700 hover:bg-gray-600"
+    style="display: none"
+  >{load_more}</button>
+</div>
 
 <script src="/bank/index.ts" inline></script>

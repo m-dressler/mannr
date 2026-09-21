@@ -5,6 +5,9 @@ global:
 en:
   bank: Bank
   leaderboard: Leaderboard
+  search_users: Search users…
+  no_users_found: No users match that search.
+  load_more: Load more
 
   profile: Profile
   balance: Balance
