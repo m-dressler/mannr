@@ -230,11 +230,6 @@ onDomReady(async () => {
     // Handle actions
     const canVouchThis = canVouch && transaction.status === "pending";
 
-    // Outgoing transfers debit the viewed user — flip sign for display
-    const displayDelta = transaction.direction === "outgoing"
-      ? -transaction.delta
-      : transaction.delta;
-
     const toSlots = (map: TemplateElementMapper): TemplateElementMapper =>
       Object.fromEntries(
         Object.entries(map).map(([k, v]) => [`[data-slot="${k}"]`, v]),
@@ -249,11 +244,14 @@ onDomReady(async () => {
             ? ` (${transaction.vouch_count}/${transaction.required_vouches})`
             : ""),
         reason: getReasonText(transaction),
-        creator: transaction.creator_name,
+        [transaction.direction ?? "incoming"]: { className: "" },
+        creator: transaction.direction === "incoming"
+          ? transaction.creator_name
+          : transaction.recipient_name ?? "Unknown",
         delta: {
-          classList: [`text-${displayDelta >= 0 ? "green" : "red"}-500`],
-          textContent: `${displayDelta >= 0 ? "+" : ""}${
-            new Intl.NumberFormat().format(displayDelta)
+          classList: [`text-${transaction.delta >= 0 ? "green" : "red"}-500`],
+          textContent: `${transaction.delta >= 0 ? "+" : ""}${
+            new Intl.NumberFormat().format(transaction.delta)
           } MPs`,
         },
         // Remove actions if nothing can be done

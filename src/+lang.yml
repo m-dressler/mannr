@@ -37,4 +37,6 @@ en:
 
   global:
     at: "at"
+    from: "from"
+    to: "to"
     search_placeholder: Search...

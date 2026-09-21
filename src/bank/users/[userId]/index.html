@@ -73,6 +73,8 @@
           class="flex justify-between items-center mb-2 text-sm text-slate-300"
         >
           <p>
+            <span data-slot="incoming" class="hidden">{global.from}</span>
+            <span data-slot="outgoing" class="hidden">{global.to}</span>
             <span data-slot="creator"></span>
             {global.at}
             <time data-slot="date"></time>
