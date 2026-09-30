@@ -1,0 +1,8 @@
+en:
+  login_title: Sign in
+  login_tagline: Passwords are for the weak. We'll email you a sign-in link.
+  login_email: Email
+  login_email_placeholder: you@example.com
+  login_submit: Send me the link
+  login_invite_only: >
+    Invite-only. Not a member yet? Get someone on the inside to invite you.

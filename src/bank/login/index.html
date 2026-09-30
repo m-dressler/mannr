@@ -1,7 +1,44 @@
-<h1>Mannr Bank Login</h1>
-<form method="post">
-  <label for="email">
-    Email: <input type="email" name="email" id="email" />
-  </label>
-  <button type="submit">Log In</button>
-</form>
+<slot name="title">{login_title} | {bank}</slot>
+
+<div class="relative w-full max-w-sm">
+  <!-- Decorative glow bleeding out from behind the card -->
+  <div
+    aria-hidden="true"
+    class="pointer-events-none absolute -inset-x-6 -top-8 h-56 rounded-full bg-red/30 blur-3xl"
+  ></div>
+
+  <div
+    class="relative rounded-2xl border border-main/10 bg-background/80 p-6 shadow-2xl shadow-black/60 backdrop-blur-sm sm:p-8"
+  >
+    <img src="/logo.svg" alt="" class="mx-auto mb-3 h-20 w-20" />
+    <h1 class="mb-1 text-center text-2xl tracking-tight">{pageName} {bank}</h1>
+    <p class="mb-6 text-center text-balance text-main/60">{login_tagline}</p>
+
+    <form method="post" class="flex flex-col gap-3">
+      <label for="email" class="text-sm text-main/70">{login_email}</label>
+      <!-- 16px text keeps iOS Safari from zooming the page on focus -->
+      <input
+        type="email"
+        name="email"
+        id="email"
+        required
+        autocomplete="email"
+        autocapitalize="off"
+        spellcheck="false"
+        enterkeyhint="send"
+        placeholder="{login_email_placeholder}"
+        class="h-12 w-full rounded-lg border-main/15 bg-main/5 px-4 text-base placeholder:text-main/30 focus:border-red focus:ring-red/50 autofill:shadow-[inset_0_0_0_100px_#1e1e1e] autofill:[-webkit-text-fill-color:var(--color-main)]"
+      />
+      <button
+        type="submit"
+        class="mt-1 h-12 w-full rounded-lg text-base font-semibold whitespace-nowrap shadow-lg shadow-red/25 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-main active:scale-[0.98]"
+      >
+        {login_submit} <span aria-hidden="true">→</span>
+      </button>
+    </form>
+
+    <p class="mt-6 text-center text-xs text-balance text-main/40">
+      {login_invite_only}
+    </p>
+  </div>
+</div>
