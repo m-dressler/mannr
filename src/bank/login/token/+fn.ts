@@ -1,4 +1,4 @@
-import { createCookie } from "@lib/server/cookie.ts";
+import { createSessionCookie } from "@lib/server/cookie.ts";
 import {
   createToken,
   invalidateToken,
@@ -49,13 +49,9 @@ export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
   return new Response(null, {
     status: 302,
     headers: {
-      "Set-Cookie": createCookie("session", sessionToken, {
-        HttpOnly: true,
-        Secure: true,
-        Path: "/",
-        SameSite: "Strict",
-        "Max-Age": maxAge,
-        Domain: url.hostname === "localhost" ? undefined : "mannr.org",
+      "Set-Cookie": createSessionCookie(sessionToken, {
+        maxAge,
+        hostname: url.hostname,
       }),
       Location: "/bank",
     },

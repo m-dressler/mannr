@@ -1,4 +1,4 @@
-import { createCookie, parseCookie } from "@lib/server/cookie.ts";
+import { createSessionCookie, parseCookie } from "@lib/server/cookie.ts";
 import { verifyToken } from "@lib/server/token.ts";
 
 export const onRequest: PagesFunction<Env> = async ({
@@ -25,13 +25,9 @@ export const onRequest: PagesFunction<Env> = async ({
     return new Response(null, {
       status: 302,
       headers: {
-        "Set-Cookie": createCookie("session", "", {
-          HttpOnly: true,
-          Secure: true,
-          Path: "/",
-          SameSite: "Strict",
-          "Max-Age": 0,
-          Domain: url.hostname === "localhost" ? undefined : "mannr.org",
+        "Set-Cookie": createSessionCookie("", {
+          maxAge: 0,
+          hostname: url.hostname,
         }),
         Location: "/bank/login",
       },
@@ -52,13 +48,9 @@ export const onRequest: PagesFunction<Env> = async ({
     return new Response(null, {
       status: 302,
       headers: {
-        "Set-Cookie": createCookie("session", "", {
-          HttpOnly: true,
-          Secure: true,
-          Path: "/",
-          SameSite: "Strict",
-          "Max-Age": 0,
-          Domain: url.hostname === "localhost" ? undefined : "mannr.org",
+        "Set-Cookie": createSessionCookie("", {
+          maxAge: 0,
+          hostname: url.hostname,
         }),
         Location: "/bank/login",
       },
