@@ -133,23 +133,21 @@ onDomReady(async () => {
     const ownerDirection = getTransactionDirection(transaction, profileUserId);
 
     // Update MPs balance — only if transaction is immediately active
-    const mpsBalanceEl = document.getElementById("mps-balance");
-    if (transaction.status === "active" && mpsBalanceEl) {
-      const currentBalanceText =
-        mpsBalanceEl.textContent?.match(/[\d,]+/)?.[0] || "0";
-      const currentBalance = parseInt(currentBalanceText.replace(/,/g, ""), 10);
+    // Read the raw balance; the displayed one is formatted in the request's
+    // locale and can't be parsed back reliably (e.g. "1.004" in German)
+    const mpsAmountEl = document.querySelector<HTMLElement>(
+      "#mps-balance [data-mps]",
+    );
+    if (transaction.status === "active" && mpsAmountEl) {
+      const currentBalance = Number(mpsAmountEl.dataset.mps);
       // The server swaps parties on negative transfers, so `delta` is always
       // what the recipient gains; an owner who sent it loses that much
       const newBalance = ownerDirection === "outgoing"
         ? currentBalance - transaction.delta
         : currentBalance + transaction.delta;
-      const formattedBalance = new Intl.NumberFormat().format(newBalance);
 
-      // Preserve the {mps} suffix by updating just the number part
-      mpsBalanceEl.textContent = mpsBalanceEl.textContent?.replace(
-        /[\d,]+/,
-        formattedBalance,
-      ) || `${formattedBalance} mps`;
+      mpsAmountEl.dataset.mps = String(newBalance);
+      mpsAmountEl.textContent = new Intl.NumberFormat().format(newBalance);
     }
 
     // Only list it if it belongs to the tab being viewed

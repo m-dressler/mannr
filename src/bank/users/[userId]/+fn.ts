@@ -54,6 +54,8 @@ export const onRequestGet: PagesFunction<Env, "userId", BankData> = async ({
     TOKENS: new Intl.NumberFormat(getLocale(request)).format(
       user.mps,
     ),
+    // Unformatted, so the client can update the balance without parsing it
+    BALANCE: user.mps,
     AVATAR_SRC: toGravatarUrl(user.gravatarId),
     AVATAR_ALT: user.first_name + ` profile picture`,
     GRAVATAR_ID: user.gravatarId,
