@@ -187,7 +187,15 @@ export const onRequestPost = forwardErrors<Env, "userId", BankData>(async (
       "UPDATE users SET reserved_mps = reserved_mps + ? WHERE id = ?",
     ).bind(actualDelta, senderUserId).run();
   } else {
-    // Mint mode - creates new MPs
+    // Mint mode - creates new MPs, requires create_mt role
+    if (!hasRole(ctx.data.token.roles, "create_mt")) {
+      throw new ApiError(
+        "Insufficient permissions to create tokens",
+        403,
+        "insufficient_permissions",
+      );
+    }
+
     transactionType = "mint";
     actualRecipientId = recipientUser.id;
     actualDelta = delta;
