@@ -293,6 +293,7 @@ export const onRequestPost = forwardErrors<Env, "userId", BankData>(async (
   }
 
   // If existingVouches, add to DB
+  let vouchCount = 0;
   if (existingVouches > 0) {
     const vouchResult = await vouchTransaction(
       ctx.env.DB,
@@ -301,10 +302,16 @@ export const onRequestPost = forwardErrors<Env, "userId", BankData>(async (
     );
     // Ignore errors for now as transaction is still valid and createdByUserId is prevented from vouching anyway
     if (vouchResult.error) console.error(vouchResult);
+    else vouchCount = 1;
   }
 
   const toastName = requiredVouches > 0
     ? "transaction_created"
     : "transaction_success";
-  return createSuccessResponse(ctx.request, transaction, toastName);
+  // Same `vouch_count` as the history endpoint, so the UI can list it as-is
+  return createSuccessResponse(
+    ctx.request,
+    { ...transaction, vouch_count: vouchCount },
+    toastName,
+  );
 });

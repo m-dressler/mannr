@@ -120,7 +120,7 @@ onDomReady(async () => {
     if (!(e instanceof CustomEvent)) return;
     const { success, data: transaction } = e.detail as {
       success: boolean;
-      data: Transaction;
+      data: Transaction & { vouch_count: number };
     };
 
     if (!success || !transaction) return;
@@ -150,11 +150,18 @@ onDomReady(async () => {
       return;
     }
 
-    // Add new transaction with metadata
+    // Add new transaction with the metadata the history endpoint would add
+    const viewerName = `${userInfo.first_name} ${userInfo.last_name}`;
     const transactionWithMeta = {
       ...transaction,
-      creator_name: userInfo.email, // Current user created it
-      vouch_count: 0, // New transactions always have 0 vouches
+      // Current user created it; same format as the history endpoint
+      creator_name: viewerName,
+      // The Sent tab names the recipient, which is the viewer whenever a new
+      // transaction lands there (the server swaps parties on negative transfers)
+      recipient_name: transaction.recipient_user_id === userInfo.userId
+        ? viewerName
+        : undefined,
+      direction,
     };
     createTransactionElement(transactionWithMeta, userInfo, true);
   };
@@ -265,7 +272,10 @@ onDomReady(async () => {
     // Prepend to list if requested
     if (prepend) {
       const container = document.getElementById("transactions-list");
-      const newElement = transactionTemplater.instances.at(-1) as HTMLElement;
+      // `instances` also holds the whitespace text nodes around the <li>
+      const newElement = transactionTemplater.instances.findLast((node) =>
+        node instanceof HTMLElement
+      );
       if (container && newElement) {
         container.insertBefore(newElement, container.firstChild);
       }
