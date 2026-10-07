@@ -129,13 +129,20 @@ onDomReady(async () => {
     form.reset();
     form.closest("dialog")?.close();
 
+    /** Side of the transaction the profile owner is on */
+    const ownerDirection = getTransactionDirection(transaction, profileUserId);
+
     // Update MPs balance — only if transaction is immediately active
     const mpsBalanceEl = document.getElementById("mps-balance");
     if (transaction.status === "active" && mpsBalanceEl) {
       const currentBalanceText =
         mpsBalanceEl.textContent?.match(/[\d,]+/)?.[0] || "0";
       const currentBalance = parseInt(currentBalanceText.replace(/,/g, ""), 10);
-      const newBalance = currentBalance + transaction.delta;
+      // The server swaps parties on negative transfers, so `delta` is always
+      // what the recipient gains; an owner who sent it loses that much
+      const newBalance = ownerDirection === "outgoing"
+        ? currentBalance - transaction.delta
+        : currentBalance + transaction.delta;
       const formattedBalance = new Intl.NumberFormat().format(newBalance);
 
       // Preserve the {mps} suffix by updating just the number part
@@ -146,9 +153,7 @@ onDomReady(async () => {
     }
 
     // Only list it if it belongs to the tab being viewed
-    if (getTransactionDirection(transaction, profileUserId) !== direction) {
-      return;
-    }
+    if (ownerDirection !== direction) return;
 
     // Add new transaction with the metadata the history endpoint would add
     const viewerName = `${userInfo.first_name} ${userInfo.last_name}`;
