@@ -7,6 +7,7 @@ import {
 } from "@lib/server/error.ts";
 import { getLocale } from "@lib/server/locale.ts";
 import { template } from "@lib/server/template.ts";
+import { isValidDelta } from "@lib/server/transaction/delta.ts";
 import { calculateRequiredVouches } from "@lib/server/transaction/requiredVouches.ts";
 import { vouchTransaction } from "@lib/server/transaction/vouch.ts";
 import { toUiUser } from "@lib/server/user.ts";
@@ -118,9 +119,9 @@ export const onRequestPost = forwardErrors<Env, "userId", BankData>(async (
 
     delta = parseInt(deltaStr, 10);
     if (body.has("negative")) delta = -delta;
-    if (isNaN(delta)) {
+    if (!isValidDelta(delta)) {
       throw new ApiError(
-        "Invalid delta value",
+        "Delta must be a non-zero whole number",
         400,
         "invalid_delta",
       );
