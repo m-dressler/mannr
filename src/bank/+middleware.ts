@@ -95,5 +95,13 @@ export const onRequest: PagesFunction<Env> = async ({
   // Pass the fresh roles (and JWT defaults) downstream
   data.token = { ...verifyResult.payload, roles: live.roles };
 
-  return next();
+  const response = await next();
+  if (!response.headers.get("Content-Type")?.includes("application/json")) {
+    return response;
+  }
+  // Balances change with every transaction, but browsers replay cached
+  // fetches without revalidating on back/forward navigation
+  const uncached = new Response(response.body, response);
+  uncached.headers.set("Cache-Control", "no-store");
+  return uncached;
 };

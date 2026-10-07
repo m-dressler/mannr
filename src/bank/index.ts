@@ -125,6 +125,15 @@ onDomReady(() => {
 
   loadMoreBtn.addEventListener("click", () => fetchPage());
 
+  // A back/forward cache restore shows the list as it was when the user left
+  addEventListener("pageshow", (e) => {
+    if (!e.persisted) return;
+    offset = 0;
+    hasMore = true;
+    clearList();
+    fetchPage();
+  });
+
   fetchPage();
 });
 

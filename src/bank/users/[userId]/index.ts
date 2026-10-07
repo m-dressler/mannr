@@ -434,3 +434,9 @@ onDomReady(async () => {
 
 replaceProfilePicture();
 renderStreakFlame();
+
+// The balance is rendered into the HTML, so a back/forward cache restore
+// would show it as it was when the user left
+addEventListener("pageshow", (e) => {
+  if (e.persisted) location.reload();
+});
