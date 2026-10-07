@@ -9,7 +9,7 @@
     "6": "revoke_transaction"
   },
   "vouchThresholds": [
-    { "minAbsDelta": 25, "requiredVouches": 2 },
+    { "minAbsDelta": 0, "requiredVouches": 2 },
     { "minAbsDelta": 100, "requiredVouches": 3 },
     { "minAbsDelta": 1000, "requiredVouches": 4 }
   ],

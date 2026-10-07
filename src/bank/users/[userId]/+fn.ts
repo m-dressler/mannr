@@ -7,24 +7,13 @@ import {
 } from "@lib/server/error.ts";
 import { getLocale } from "@lib/server/locale.ts";
 import { template } from "@lib/server/template.ts";
+import { calculateRequiredVouches } from "@lib/server/transaction/requiredVouches.ts";
 import { vouchTransaction } from "@lib/server/transaction/vouch.ts";
 import { toUiUser } from "@lib/server/user.ts";
 import { BankData } from "../../+types.ts";
 import BANK_METADATA_RAW from "../../meta.json" with { type: "json" };
 
 const BANK_METADATA = BANK_METADATA_RAW as unknown as BankMetadata;
-
-/** Calculate required vouches based on transaction delta */
-const calculateRequiredVouches = (delta: number): number => {
-  const absDelta = Math.abs(delta);
-  let vouches = 0;
-  for (const threshold of BANK_METADATA.vouchThresholds) {
-    if (absDelta >= threshold.minAbsDelta) {
-      vouches = Math.max(vouches, threshold.requiredVouches);
-    }
-  }
-  return vouches;
-};
 
 const isValidUserId = (userId: string | string[]): userId is string =>
   typeof userId === "string" && /^[0-9]+$/.test(userId);
