@@ -1,3 +1,4 @@
+import { renderStreakFlame } from "@lib/client/renderStreakFlame.ts";
 import { replaceProfilePicture } from "@lib/client/replaceProfilePicture.ts";
 import { toGravatarUrl } from "@lib/common/gravatar.ts";
 import { HTMLTemplater, TemplateElementMapper } from "@md/html-templater";
@@ -128,3 +129,4 @@ onDomReady(() => {
 });
 
 replaceProfilePicture();
+renderStreakFlame();

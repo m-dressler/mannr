@@ -14,6 +14,17 @@ en:
   reserved: Reserved
   available: Available
   joined: Joined
+  login_streak: Login streak
+  streak_info:
+    title: Login Streak
+    explanation: >-
+      Show your face at the Bank once a day like a man. Coming back 23 to 48 hours after
+      your last counted visit adds a day to your streak. Let 48 hours pass and
+      you're back to day 1, like a boy.
+    rewards: "The Bank pays for relentless devotion:"
+    day: Day
+    repeat: After that, every {days} days pays another {mps} MPs.
+    close: Got it
   invited_by: Invited by
   you_invited: You invited
   invite_someone: Invite someone

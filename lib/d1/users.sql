@@ -12,7 +12,12 @@ CREATE TABLE IF NOT EXISTS users (
     reserved_mps INTEGER NOT NULL DEFAULT 0,
     roles INTEGER NOT NULL DEFAULT 0,
     referrer INTEGER,
-    banned_at INTEGER
+    banned_at INTEGER,
+
+    -- Login streak: visits each 23–48h after the previous counted one;
+    -- streak_at = epoch ms of the visit that last advanced it
+    streak_days INTEGER NOT NULL DEFAULT 0,
+    streak_at INTEGER
 );
 
 -- Indexes for performance

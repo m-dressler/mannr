@@ -31,6 +31,8 @@ en:
     body: The page you were looking for has moved, or never existed in the first place.
     home: Return Home
 
+  streak_reward_toast: 🔥 Login streak bonus! The Bank rewards your relentless devotion.
+
   footer:
     # See https://news.ycombinator.com/item?id=34880663 for why the year can be static at build time
     copyright: Copyright © {year} mannr.org. All rights reserved.

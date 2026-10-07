@@ -12,6 +12,10 @@ export type UserInfo = TokenPayload & {
   referrer: number | null;
   referrer_name: string | null;
   invited_count: number;
+  /** Login streak length, this visit included, so always at least 1 */
+  streak_days: number;
+  /** Epoch ms of the visit that last advanced the streak */
+  streak_at: number | null;
 };
 
 export const onRequestGet: PagesFunction<Env, string, BankData> = async ({
@@ -26,7 +30,7 @@ export const onRequestGet: PagesFunction<Env, string, BankData> = async ({
 
   const user = await env.DB.prepare(
     `SELECT u.first_name, u.last_name, u.mps, u.reserved_mps, u.created_at,
-            u.referrer,
+            u.referrer, u.streak_days, u.streak_at,
             r.first_name AS referrer_first, r.last_name AS referrer_last,
             (SELECT COUNT(*) FROM users WHERE referrer = u.id AND id != u.id)
               AS invited_count
@@ -38,6 +42,7 @@ export const onRequestGet: PagesFunction<Env, string, BankData> = async ({
       User,
       "first_name" | "last_name" | "mps" | "reserved_mps"
     >
+    & { streak_days: number; streak_at: number | null }
     & {
       created_at: number;
       referrer: number | null;
@@ -65,6 +70,9 @@ export const onRequestGet: PagesFunction<Env, string, BankData> = async ({
       referrer: user?.referrer ?? null,
       referrer_name: referrerName,
       invited_count: user?.invited_count ?? 0,
+      // The middleware counts this visit first; this only matters if that failed
+      streak_days: Math.max(user?.streak_days ?? 0, 1),
+      streak_at: user?.streak_at ?? null,
     } as const satisfies UserInfo,
   );
 };

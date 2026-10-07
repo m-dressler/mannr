@@ -13,6 +13,12 @@
     { "minAbsDelta": 100, "requiredVouches": 3 },
     { "minAbsDelta": 1000, "requiredVouches": 4 }
   ],
+  "streakRewards": [
+    { "days": 3, "mps": 5 },
+    { "days": 7, "mps": 20 },
+    { "days": 14, "mps": 50 },
+    { "days": 30, "mps": 250 }
+  ],
   "standardTransactions": {
     "0": ["High Pitch Voice", -500],
     "1": ["Complain", -250],

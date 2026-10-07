@@ -55,6 +55,12 @@
       <!-- Allows each page to define the internationalized toast messages it needs -->
       <div hidden>
         <slot name="toasts" />
+        <!-- Paid out by the bank middleware on any page it redirects to -->
+        <data
+          name="streak_reward"
+          data-type="success"
+          value="{streak_reward_toast}"
+        ></data>
         <!-- example: <data name="toast_name" value="{message}" type="success"></data> -->
       </div>
     </div>

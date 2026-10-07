@@ -1,6 +1,8 @@
 {
   "version": "5",
   "specifiers": {
+    "jsr:@md/cf-page@*": "0.8.9",
+    "jsr:@md/cf-page@0.8.9": "0.8.9",
     "jsr:@md/cf-page@~0.8.9": "0.8.9",
     "jsr:@md/cli@^0.0.2": "0.0.2",
     "jsr:@md/dom-ready-promise@^0.0.0": "0.0.0",

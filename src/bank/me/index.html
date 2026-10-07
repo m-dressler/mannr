@@ -1,4 +1,5 @@
 <slot name="head">
+  <script src="/js/toast.ts" async></script>
   <script src="/bank/me/index.ts" inline></script>
 </slot>
 <slot name="title">{profile} | {bank}</slot>
@@ -74,6 +75,9 @@
     class="text-right font-semibold"
     data-show-if-reserved
   ></dd>
+
+  <dt class="text-gray-400">{login_streak}</dt>
+  <dd id="stat-streak" class="text-right"></dd>
 
   <dt class="text-gray-400">{joined}</dt>
   <dd id="stat-joined" class="text-right"></dd>

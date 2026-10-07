@@ -47,6 +47,11 @@ onDomReady(async () => {
   setText("stat-available", formatMps(available));
   toggleGroup("data-show-if-reserved", userInfo.reserved_mps > 0);
 
+  setText(
+    "stat-streak",
+    `${userInfo.streak_days} ${userInfo.streak_days === 1 ? "day" : "days"} 🔥`,
+  );
+
   setText("stat-joined", formatJoined(userInfo.created_at));
 
   setText("stat-referrer", userInfo.referrer_name ?? "");

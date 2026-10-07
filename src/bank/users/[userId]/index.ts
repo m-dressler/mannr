@@ -1,4 +1,5 @@
 import { getUserInfo } from "@lib/client/getUserInfo.ts";
+import { renderStreakFlame } from "@lib/client/renderStreakFlame.ts";
 import { replaceProfilePicture } from "@lib/client/replaceProfilePicture.ts";
 import { hasRole } from "@lib/common/roles.ts";
 import {
@@ -432,3 +433,4 @@ onDomReady(async () => {
 });
 
 replaceProfilePicture();
+renderStreakFlame();

@@ -33,6 +33,11 @@ type BankMetadata = {
   vouchThresholds: Array<
     { minAbsDelta: number; requiredVouches: number }
   >;
+  /**
+   * Login-streak payouts, ascending by `days`. The last milestone keeps paying
+   * every `days` days for as long as the streak lasts.
+   */
+  streakRewards: Array<{ days: number; mps: number }>;
 };
 
 type Transaction = {

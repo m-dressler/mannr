@@ -1,6 +1,20 @@
+<slot name="head">
+  <script src="/js/dialog.ts" async></script>
+  <script src="/js/toast.ts" async></script>
+</slot>
 <slot name="title">{pageName} | {bank}</slot>
 <slot name="header">
-  <a href="/bank/me" class="ml-auto">
+  <button
+    type="button"
+    data-type="streak-flame"
+    data-dialog="streak-modal"
+    title="{streak_info.title}"
+    class="ml-auto h-8 inline-flex items-center gap-1 px-2 py-0 bg-transparent hover:bg-main/10 font-semibold"
+    hidden
+  >
+    🔥 <span data-type="streak-count"></span>
+  </button>
+  <a href="/bank/me">
     <img
       data-type="profile-picture"
       src="https://www.gravatar.com/avatar/?d=mp"
@@ -89,5 +103,35 @@
     style="display: none"
   >{load_more}</button>
 </div>
+
+<slot name="modals">
+  <dialog class="modal" closedby="any" id="streak-modal">
+    <article>
+      <header>
+        <h4>🔥 {streak_info.title}</h4>
+      </header>
+      <main>
+        <p class="mb-3">{streak_info.explanation}</p>
+        <p class="mb-1">{streak_info.rewards}</p>
+        <ul id="streak-reward-list" class="mb-3">
+          <template>
+            <li class="flex justify-between gap-4">
+              <span>{streak_info.day}</span>
+              <em>{mps}</em>
+            </li>
+          </template>
+        </ul>
+        <p id="streak-reward-repeat" class="text-sm text-gray-400">
+          {streak_info.repeat, days: [DAYS], mps: [MPS]}
+        </p>
+      </main>
+      <footer>
+        <form method="dialog">
+          <button class="py-1">{streak_info.close}</button>
+        </form>
+      </footer>
+    </article>
+  </dialog>
+</slot>
 
 <script src="/bank/index.ts" inline></script>

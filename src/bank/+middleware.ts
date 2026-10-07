@@ -1,4 +1,5 @@
 import { createSessionCookie, parseCookie } from "@lib/server/cookie.ts";
+import { recordStreakVisit } from "@lib/server/streak.ts";
 import { verifyToken } from "@lib/server/token.ts";
 
 export const onRequest: PagesFunction<Env> = async ({
@@ -38,10 +39,14 @@ export const onRequest: PagesFunction<Env> = async ({
   // promotion/demotion/ban takes effect on the next request instead of
   // requiring the user to re-login.
   const live = await env.DB.prepare(
-    "SELECT roles, banned_at FROM users WHERE id = ?",
-  ).bind(verifyResult.payload.userId).first<
-    { roles: number; banned_at: number | null }
-  >();
+    `SELECT roles, banned_at, streak_days, streak_at
+       FROM users WHERE id = ?`,
+  ).bind(verifyResult.payload.userId).first<{
+    roles: number;
+    banned_at: number | null;
+    streak_days: number;
+    streak_at: number | null;
+  }>();
 
   if (!live) {
     // Account vanished — drop the session and bounce back to login
@@ -65,6 +70,26 @@ export const onRequest: PagesFunction<Env> = async ({
       status: 403,
       headers: { "Content-Type": "text/html;charset=utf-8" },
     });
+  }
+
+  // A failed streak write must never lock anyone out of the bank
+  const streakReward = await recordStreakVisit(
+    env.DB,
+    verifyResult.payload.userId,
+    { days: live.streak_days, at: live.streak_at },
+    Date.now(),
+  ).catch((error) => {
+    console.error("Couldn't record login streak", error);
+    return 0;
+  });
+
+  // Reload the page the user opened with the toast param so they see the payout
+  if (
+    streakReward > 0 && request.method === "GET" &&
+    request.headers.get("Sec-Fetch-Mode") === "navigate"
+  ) {
+    url.searchParams.set("toast", "streak_reward");
+    return Response.redirect(url, 303);
   }
 
   // Pass the fresh roles (and JWT defaults) downstream
