@@ -1,5 +1,6 @@
 import { hasRole } from "@lib/common/roles.ts";
 import { isSelfPenalty } from "@lib/common/selfPenalty.ts";
+import { toActivationStatements } from "@lib/server/transaction/activate.ts";
 import { vouchTransaction } from "@lib/server/transaction/vouch.ts";
 import { BankData } from "../../../+types.ts";
 
@@ -80,52 +81,25 @@ export const onRequestPost: PagesFunction<Env, "transactionId", BankData> =
     ).bind(transactionId).first<{ count: number }>();
 
     const vouchCount = vouchCountResult?.count ?? 0;
-    const activated = selfPenalty || vouchCount >= transaction.required_vouches;
+    const approved = selfPenalty || vouchCount >= transaction.required_vouches;
 
-    // If approved, activate transaction and apply MPs
-    if (activated) {
-      // Update transaction status
-      await ctx.env.DB.prepare(
-        "UPDATE transactions SET status = 'active' WHERE id = ?",
-      ).bind(transactionId).run();
+    // If approved, activate transaction and apply MPs in one transaction
+    const results = approved
+      ? await ctx.env.DB.batch(
+        toActivationStatements(transaction).map(({ sql, params }) =>
+          ctx.env.DB.prepare(sql).bind(...params)
+        ),
+      )
+      : [];
 
-      // Apply balance changes based on transaction type
-      if (
-        transaction.transaction_type === "transfer" &&
-        transaction.sender_user_id !== null
-      ) {
-        // For transfers: deduct from sender, add to recipient, unreserve
-        const batchResult = await ctx.env.DB.batch([
-          ctx.env.DB.prepare(
-            "UPDATE users SET mps = mps - ?, reserved_mps = reserved_mps - ? WHERE id = ?",
-          ).bind(
-            transaction.delta,
-            transaction.delta,
-            transaction.sender_user_id,
-          ),
-          ctx.env.DB.prepare(
-            "UPDATE users SET mps = mps + ? WHERE id = ?",
-          ).bind(transaction.delta, transaction.recipient_user_id),
-        ]);
-
-        // Check for errors in batch
-        const errors = batchResult.filter((r) => r.error);
-        if (errors.length > 0) {
-          return Response.json({ message: errors[0].error }, { status: 500 });
-        }
-      } else {
-        // For mints: only add to recipient
-        const updateResult = await ctx.env.DB.prepare(
-          "UPDATE users SET mps = mps + ? WHERE id = ?",
-        ).bind(transaction.delta, transaction.recipient_user_id).run();
-
-        if (updateResult.error) {
-          return Response.json({ message: updateResult.error }, {
-            status: 500,
-          });
-        }
-      }
+    // Check for errors in batch
+    const errors = results.filter((r) => r.error);
+    if (errors.length > 0) {
+      return Response.json({ message: errors[0].error }, { status: 500 });
     }
+
+    /** Only the request that won the pending → active swap applied the MPs */
+    const activated = results[0]?.meta.changes === 1;
 
     return Response.json({
       success: true,

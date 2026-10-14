@@ -1,4 +1,5 @@
 import { hasRole } from "@lib/common/roles.ts";
+import { toRevocationStatements } from "@lib/server/transaction/revoke.ts";
 import { BankData } from "../../../+types.ts";
 
 const isValidTransactionId = (id: string | string[]): id is string =>
@@ -42,60 +43,37 @@ export const onRequestPost: PagesFunction<Env, "transactionId", BankData> =
       ? revokeReason
       : null;
 
-    // Reverse the transaction based on status
-    if (transaction.status === "active") {
-      // Transaction was activated - reverse the balance changes
-      if (transaction.transaction_type === "transfer") {
-        // Reverse both sides of transfer
-        if (transaction.sender_user_id === null) {
-          return Response.json({
-            message: "Transfer transaction missing sender_user_id",
-          }, { status: 500 });
-        }
-
-        await ctx.env.DB.batch([
-          // Reverse recipient
-          ctx.env.DB.prepare(
-            "UPDATE users SET mps = mps - ? WHERE id = ?",
-          ).bind(transaction.delta, transaction.recipient_user_id),
-          // Reverse sender (give back the mps)
-          ctx.env.DB.prepare(
-            "UPDATE users SET mps = mps + ? WHERE id = ?",
-          ).bind(transaction.delta, transaction.sender_user_id),
-        ]);
-      } else {
-        // Mint transaction - just reverse recipient
-        const reverseResult = await ctx.env.DB.prepare(
-          "UPDATE users SET mps = mps - ? WHERE id = ?",
-        ).bind(transaction.delta, transaction.recipient_user_id).run();
-
-        if (reverseResult.error) {
-          return Response.json({
-            message: reverseResult.error,
-          }, { status: 500 });
-        }
-      }
-    } else if (transaction.status === "pending" && transaction.transaction_type === "transfer" && transaction.sender_user_id !== null) {
-      // Transaction is pending - unreserve the funds
-      await ctx.env.DB.prepare(
-        "UPDATE users SET reserved_mps = reserved_mps - ? WHERE id = ?",
-      ).bind(transaction.delta, transaction.sender_user_id).run();
+    if (
+      transaction.transaction_type === "transfer" &&
+      transaction.sender_user_id === null
+    ) {
+      return Response.json({
+        message: "Transfer transaction missing sender_user_id",
+      }, { status: 500 });
     }
 
-    // Mark transaction as revoked
-    const revokeResult = await ctx.env.DB.prepare(
-      `UPDATE transactions
-       SET status = 'revoked', revoked_by_user_id = ?, revoked_at = ?, revoke_reason = ?
-       WHERE id = ?`,
-    ).bind(
-      revokerUserId,
-      Math.floor(Date.now() / 1000),
-      finalReason,
-      transactionId,
-    ).run();
+    // Mark transaction as revoked and reverse it based on status, in one transaction
+    const results = await ctx.env.DB.batch(
+      toRevocationStatements(
+        // Re-pick `status` so TS sees it narrowed past "revoked"
+        { ...transaction, status: transaction.status },
+        revokerUserId,
+        Math.floor(Date.now() / 1000),
+        finalReason,
+      ).map(({ sql, params }) => ctx.env.DB.prepare(sql).bind(...params)),
+    );
 
-    if (revokeResult.error) {
-      return Response.json({ message: revokeResult.error }, { status: 500 });
+    // Check for errors in batch
+    const errors = results.filter((r) => r.error);
+    if (errors.length > 0) {
+      return Response.json({ message: errors[0].error }, { status: 500 });
+    }
+
+    // Revoked or activated by someone else since we read it
+    if (results[0].meta.changes !== 1) {
+      return Response.json({
+        message: "Transaction changed in the meantime, reload and try again",
+      }, { status: 409 });
     }
 
     return Response.json({
