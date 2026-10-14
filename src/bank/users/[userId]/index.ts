@@ -2,6 +2,7 @@ import { getUserInfo } from "@lib/client/getUserInfo.ts";
 import { renderStreakFlame } from "@lib/client/renderStreakFlame.ts";
 import { replaceProfilePicture } from "@lib/client/replaceProfilePicture.ts";
 import { hasRole } from "@lib/common/roles.ts";
+import { isSelfPenalty } from "@lib/common/selfPenalty.ts";
 import {
   getTransactionDirection,
   parseTransactionDirection,
@@ -231,10 +232,11 @@ onDomReady(async () => {
     prepend = false,
   ): void => {
     const currentUserId = userInfo.userId;
-    const canVouch = hasRole(userInfo.roles, "vouch_mt") &&
-      transaction.recipient_user_id !== currentUserId &&
-      transaction.created_by_user_id !== currentUserId &&
-      transaction.sender_user_id !== currentUserId;
+    const canVouch = isSelfPenalty(transaction, currentUserId) ||
+      (hasRole(userInfo.roles, "vouch_mt") &&
+        transaction.recipient_user_id !== currentUserId &&
+        transaction.created_by_user_id !== currentUserId &&
+        transaction.sender_user_id !== currentUserId);
     const canRevoke = hasRole(userInfo.roles, "revoke_transaction") &&
       transaction.status !== "revoked";
 

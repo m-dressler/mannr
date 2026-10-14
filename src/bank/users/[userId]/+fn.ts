@@ -1,5 +1,6 @@
 import { toGravatarUrl } from "@lib/common/gravatar.ts";
 import { hasRole } from "@lib/common/roles.ts";
+import { isSelfPenalty } from "@lib/common/selfPenalty.ts";
 import {
   ApiError,
   createSuccessResponse,
@@ -218,6 +219,16 @@ export const onRequestPost = forwardErrors<Env, "userId", BankData>(async (
   const isThirdParty = createdByUserId !== senderUserId &&
     createdByUserId !== actualRecipientId;
   const existingVouches = isThirdParty ? 1 : 0;
+  /** Approved outright when the loser of a negative mint created it themselves */
+  const isActive = existingVouches >= requiredVouches ||
+    isSelfPenalty(
+      {
+        transaction_type: transactionType,
+        delta: actualDelta,
+        recipient_user_id: actualRecipientId,
+      },
+      createdByUserId,
+    );
 
   // Create transaction record and return it
   const transaction = await ctx.env.DB.prepare(
@@ -233,7 +244,7 @@ export const onRequestPost = forwardErrors<Env, "userId", BankData>(async (
     transactionType,
     senderUserId,
     createdByUserId,
-    requiredVouches > existingVouches ? "pending" : "active",
+    isActive ? "active" : "pending",
     requiredVouches,
   ).first<Transaction>();
 
@@ -251,8 +262,8 @@ export const onRequestPost = forwardErrors<Env, "userId", BankData>(async (
     );
   }
 
-  // Directly apply transaction if vouches already met
-  if (existingVouches >= requiredVouches) {
+  // Directly apply transaction if already approved
+  if (isActive) {
     if (transactionType === "transfer" && senderUserId !== null) {
       // For transfers: deduct from sender, add to recipient, unreserve
       const senderUpdate = await ctx.env.DB.prepare(
@@ -307,9 +318,7 @@ export const onRequestPost = forwardErrors<Env, "userId", BankData>(async (
     else vouchCount = 1;
   }
 
-  const toastName = requiredVouches > 0
-    ? "transaction_created"
-    : "transaction_success";
+  const toastName = isActive ? "transaction_success" : "transaction_created";
   // Same `vouch_count` as the history endpoint, so the UI can list it as-is
   return createSuccessResponse(
     ctx.request,

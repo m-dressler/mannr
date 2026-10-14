@@ -1,4 +1,5 @@
 import { hasRole } from "@lib/common/roles.ts";
+import { isSelfPenalty } from "@lib/common/selfPenalty.ts";
 import { vouchTransaction } from "@lib/server/transaction/vouch.ts";
 import { BankData } from "../../../+types.ts";
 
@@ -11,13 +12,6 @@ export const onRequestPost: PagesFunction<Env, "transactionId", BankData> =
 
     const transactionId = Number(ctx.params.transactionId);
     const voucherUserId = ctx.data.token.userId;
-
-    // Check if user has vouch_mt role (role 2)
-    if (!hasRole(ctx.data.token.roles, "vouch_mt")) {
-      return Response.json({
-        message: "Insufficient permissions to vouch for transactions",
-      }, { status: 403 });
-    }
 
     // Get the transaction
     const transaction = await ctx.env.DB.prepare(
@@ -37,18 +31,30 @@ export const onRequestPost: PagesFunction<Env, "transactionId", BankData> =
       }, { status: 400 });
     }
 
-    // Cannot vouch for own transactions
-    if (transaction.created_by_user_id === voucherUserId) {
-      return Response.json({
-        message: "Cannot vouch for your own transactions",
-      }, { status: 400 });
-    }
+    // The loser of a negative mint may always accept it, and that alone approves it
+    const selfPenalty = isSelfPenalty(transaction, voucherUserId);
 
-    // Cannot vouch if you're the recipient
-    if (transaction.recipient_user_id === voucherUserId) {
-      return Response.json({
-        message: "Cannot vouch for transactions you are receiving",
-      }, { status: 400 });
+    if (!selfPenalty) {
+      // Check if user has vouch_mt role (role 2)
+      if (!hasRole(ctx.data.token.roles, "vouch_mt")) {
+        return Response.json({
+          message: "Insufficient permissions to vouch for transactions",
+        }, { status: 403 });
+      }
+
+      // Cannot vouch for own transactions
+      if (transaction.created_by_user_id === voucherUserId) {
+        return Response.json({
+          message: "Cannot vouch for your own transactions",
+        }, { status: 400 });
+      }
+
+      // Cannot vouch if you're the recipient
+      if (transaction.recipient_user_id === voucherUserId) {
+        return Response.json({
+          message: "Cannot vouch for transactions you are receiving",
+        }, { status: 400 });
+      }
     }
 
     // Insert vouch (will fail with UNIQUE constraint if already vouched)
@@ -74,9 +80,10 @@ export const onRequestPost: PagesFunction<Env, "transactionId", BankData> =
     ).bind(transactionId).first<{ count: number }>();
 
     const vouchCount = vouchCountResult?.count ?? 0;
+    const activated = selfPenalty || vouchCount >= transaction.required_vouches;
 
-    // If threshold met, activate transaction and apply MPs
-    if (vouchCount >= transaction.required_vouches) {
+    // If approved, activate transaction and apply MPs
+    if (activated) {
       // Update transaction status
       await ctx.env.DB.prepare(
         "UPDATE transactions SET status = 'active' WHERE id = ?",
@@ -124,6 +131,6 @@ export const onRequestPost: PagesFunction<Env, "transactionId", BankData> =
       success: true,
       vouchCount,
       required: transaction.required_vouches,
-      activated: vouchCount >= transaction.required_vouches,
+      activated,
     });
   };
